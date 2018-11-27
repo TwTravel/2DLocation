@@ -3,34 +3,17 @@
 #include <math.h>
 #include "c24bitmap.h"
 #include "c256bitmap.h"
+#include <vector>
+#include "region.h"
+#include "mregion.h"
+#include "findobj.h"
 
 
-void RGB2HSV(double r, double g, double b, double &h, double &s,double &v)
-{
-   double themin,themax,delta;
-   //;
-   themin = min( r, min( g, b));
-   themax = max( r, max( g, b));
-   delta = themax - themin;
-    v = themax;
-    s = 0;
-   if (themax > 0)
-       s = delta / themax;
-    h = 0;
-   if (delta > 0) {
-      if (themax ==  r && themax !=  g)
-          h += ( g -  b) / delta;
-      if (themax ==  g && themax !=  b)
-          h += (2 + ( b -  r) / delta);
-      if (themax ==  b && themax !=  r)
-          h += (4 + ( r -  g) / delta);
-       h *= 60;
-   }
-   //printf("%lf, %lf\n",v,s);
-   //return(h);
-}
+using namespace std;
 
-void GetGrayImage(C24BitMap&CPic,C256BitMap &GPic)
+
+
+void GetGrayImage_(C24BitMap&CPic,C256BitMap &GPic)
 {
 	int i, j;
 	if(GPic.Width!= CPic.Width)
@@ -167,7 +150,10 @@ void GetGrayImage4(C24BitMap&CPic,C256BitMap &GPic)
 
 int main(int argc, char*argv[])
 {
-	C24BitMap  CPic;
+	C24BitMap CPic;
+ 	vector<Region> RegionVec;
+	ProcessImg( CPic, RegionVec);
+	/*C24BitMap  CPic;
 	C256BitMap GPic;
 	CPic.Load(argv[1]);
 	GetGrayImage( CPic, GPic);
@@ -180,7 +166,7 @@ int main(int argc, char*argv[])
 	GPic.Save("dest2.bmp");
 	
 	GetGrayImage4(CPic, GPic);
-	GPic.Save("dest3.bmp");
+	GPic.Save("dest3.bmp");*/
 	
 	return 1;
 }
