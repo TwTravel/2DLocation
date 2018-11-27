@@ -1,0 +1,27 @@
+用软件Cheese
+
+1) 插上 usb camera
+
+2)  软件中心 找 cheese 运行
+
+ref:
+
+http://www.ehow.com/how_5610857_mount-usb-camera-ubuntu.html
+
+
+通过 ffmpeg 捕获
+
+原来插了 usb camera 后，多了一个设备  /dev/video0
+
+ 
+ v4l2-ctl --list-devices　看设备
+ ffmpeg -f v4l2 -list_formats all -i /dev/video0　看格式
+ ffmpeg -f v4l2 -framerate 25 -video_size 640x480 -i /dev/video0 output.mkv　录像
+
+ref: 
+
+https://trac.ffmpeg.org/wiki/Capture/Webcam
+
+http://wiki.dave.eu/index.php/Video_capture_from_USB_camera
+
+--------------------- 
