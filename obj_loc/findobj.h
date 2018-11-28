@@ -57,7 +57,7 @@ void GetGrayImage(C24BitMap&CPic,C256BitMap &GPic)
 		else
 		    val = 0;
 		
-		*get_pix_color(GPic, i, j) = BOUND(val, 0, 255);
+		*get_pix_color(GPic, i, j) = BOUND( 255 - val, 0, 255);
 	 }
 }
 
@@ -202,7 +202,7 @@ void ProcessImg(C24BitMap&CPic, vector<Region>&RegionVec)
 	 DispPic.FormatF( CPic.Width , CPic.Height );
  
  GetGrayImage(CPic, GPic);
- //GPic.Save("gray.bmp");
+ GPic.Save("grayAAA.bmp");
  printf("hello~~\n"); 
 
  RegionVec.clear();

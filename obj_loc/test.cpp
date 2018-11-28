@@ -151,8 +151,14 @@ void GetGrayImage4(C24BitMap&CPic,C256BitMap &GPic)
 int main(int argc, char*argv[])
 {
 	C24BitMap CPic;
+	CPic.Load(argv[1]);
  	vector<Region> RegionVec;
 	ProcessImg( CPic, RegionVec);
+	int  i;
+	Loopi(RegionVec[0].PtVec.size())
+	      CPic.SigDot(RegionVec[0].PtVec[i].x, RegionVec[0].PtVec[i].y);
+	
+	CPic.Save("dest.bmp");
 	/*C24BitMap  CPic;
 	C256BitMap GPic;
 	CPic.Load(argv[1]);
