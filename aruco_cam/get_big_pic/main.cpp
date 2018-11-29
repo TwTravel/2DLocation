@@ -650,11 +650,11 @@ char * mkfiles[641] ={
 int main(int argc,char*argv[])
 {
   C256BitMap GPic,tmpPic;
-  GPic.FormatF(1900,2700);
+  GPic.FormatF(4000, 2700);
   int i,j,t,k; 
   
   GPic.Clear();
-  for(i=0;i<4;i++)
+  for(i=0;i<9;i++)
    for(j=0;j<7;j++) 
   {
 	  int idx = rand()%641;
@@ -662,14 +662,14 @@ int main(int argc,char*argv[])
 	  for(t=0 ;t<350;t++)
 		  for(k=0;k<350;k++)
 		  {
-			    *get_pix_color(GPic,i*450+t+100,j*450+k)=
+			    *get_pix_color(GPic,i*450+t+20,j*450+k)=
 			    *get_pix_color(tmpPic,  t, k);
 		  }
    }	  
   GPic.Save("gen1.bmp");   
   
     GPic.Clear();
-  for(i=0;i<4;i++)
+  for(i=0;i<9;i++)
    for(j=0;j<7;j++) 
   {
 	  int idx = rand()%641;
@@ -677,14 +677,14 @@ int main(int argc,char*argv[])
 	  for(t=0 ;t<350;t++)
 		  for(k=0;k<350;k++)
 		  {
-			    *get_pix_color(GPic,i*450+t+100,j*450+k)=
+			    *get_pix_color(GPic,i*450+t+20,j*450+k)=
 			    *get_pix_color(tmpPic,  t, k);
 		  }
    }	  
   GPic.Save("gen2.bmp"); 
   
     GPic.Clear();
-  for(i=0;i<4;i++)
+  for(i=0;i<9;i++)
    for(j=0;j<7;j++) 
   {
 	  int idx = rand()%641;
@@ -692,14 +692,14 @@ int main(int argc,char*argv[])
 	  for(t=0 ;t<350;t++)
 		  for(k=0;k<350;k++)
 		  {
-			    *get_pix_color(GPic,i*450+t+100,j*450+k)=
+			    *get_pix_color(GPic,i*450+t+20,j*450+k)=
 			    *get_pix_color(tmpPic,  t, k);
 		  }
    }	  
   GPic.Save("gen3.bmp"); 
   
     GPic.Clear();
-  for(i=0;i<4;i++)
+  for(i=0;i<9;i++)
    for(j=0;j<7;j++) 
   {
 	  int idx = rand()%641;
@@ -707,70 +707,12 @@ int main(int argc,char*argv[])
 	  for(t=0 ;t<350;t++)
 		  for(k=0;k<350;k++)
 		  {
-			    *get_pix_color(GPic,i*450+t+100,j*450+k)=
+			    *get_pix_color(GPic,i*450+t+20,j*450+k)=
 			    *get_pix_color(tmpPic,  t, k);
 		  }
    }	  
   GPic.Save("gen4.bmp"); 
   
-    GPic.Clear();
-  for(i=0;i<4;i++)
-   for(j=0;j<7;j++) 
-  {
-	  int idx = rand()%641;
-	  tmpPic.Load(mkfiles[idx]);
-	  for(t=0 ;t<350;t++)
-		  for(k=0;k<350;k++)
-		  {
-			    *get_pix_color(GPic,i*450+t+100,j*450+k)=
-			    *get_pix_color(tmpPic,  t, k);
-		  }
-   }	  
-  GPic.Save("gen5.bmp"); 
   
-    GPic.Clear();
-  for(i=0;i<4;i++)
-   for(j=0;j<7;j++) 
-  {
-	  int idx = rand()%641;
-	  tmpPic.Load(mkfiles[idx]);
-	  for(t=0 ;t<350;t++)
-		  for(k=0;k<350;k++)
-		  {
-			    *get_pix_color(GPic,i*450+t+100,j*450+k)=
-			    *get_pix_color(tmpPic,  t, k);
-		  }
-   }	  
-  GPic.Save("gen6.bmp"); 
-  
-    GPic.Clear();
-  for(i=0;i<4;i++)
-   for(j=0;j<7;j++) 
-  {
-	  int idx = rand()%641;
-	  tmpPic.Load(mkfiles[idx]);
-	  for(t=0 ;t<350;t++)
-		  for(k=0;k<350;k++)
-		  {
-			    *get_pix_color(GPic,i*450+t+100,j*450+k)=
-			    *get_pix_color(tmpPic,  t, k);
-		  }
-   }	  
-  GPic.Save("gen7.bmp"); 
-  
-    GPic.Clear();
-  for(i=0;i<4;i++)
-   for(j=0;j<7;j++) 
-  {
-	  int idx = rand()%641;
-	  tmpPic.Load(mkfiles[idx]);
-	  for(t=0 ;t<350;t++)
-		  for(k=0;k<350;k++)
-		  {
-			    *get_pix_color(GPic,i*450+t+100,j*450+k)=
-			    *get_pix_color(tmpPic,  t, k);
-		  }
-   }	  
-  GPic.Save("gen8.bmp"); 
   printf("hello world\n");
 }
