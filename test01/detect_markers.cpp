@@ -146,7 +146,9 @@ int main(int argc, char *argv[]) {
     
 	int i,j;
 	C24BitMap CPic;
-	CPic.FormatF(2592, 1944);
+	
+	//CPic.FormatF(2592, 1944);
+	CPic.FormatF(1600, 1200);
 	 
 	inputVideo.set(3,1600);//CV_CAP_PROP_FRAME_WIDTH, 1600);
 	inputVideo.set(4,1200);//CV_CAP_PROP_FRAME_HEIGHT, 1200);
@@ -183,6 +185,28 @@ int main(int argc, char *argv[]) {
         vector<RPoint>   corner;
         vector<RPoint>   shapecontour;
 	    GetCurveCornerPoint( CPic, RegionVec[0].ConvexHullPtVec, corner_idx, corner, shapecontour);
+		
+		C256BitMap GSubPic;
+		
+		AnalysisRegionObj(RegionVec[0]);
+		GSubPic.FormatF(RegionVec[0].right - RegionVec[0].left +1, RegionVec[0].bottom - RegionVec[0].top  +1);
+		
+		
+		Loopi(GSubPic.Width)
+		    Loopj(GSubPic.Height)
+			{
+				/*Vec3b intensity = image.at<Vec3b>(j, i);
+                uchar blue      = intensity.val[0];
+                uchar green     = intensity.val[1];
+                uchar red       = intensity.val[2];*/
+				C24PixVal Pix = get_pix_color(CPic,i+RegionVec[0].left, j+RegionVec[0].top);
+				* get_pix_color(GSubPic,i,j)= *Pix.r;
+				// = red;
+				//*Pix.g = green;
+				//*Pix.b = blue;
+				
+			}
+	    GSubPic.Save("Gbox.bmp");
 	    //CPic.Save("dest.bmp");
 		  
 	    //CPic.Save("color_pic.bmp");
