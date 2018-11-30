@@ -195,6 +195,9 @@ void GetBlackPicRegion(C256BitMap &Pic,C24BitMap&CPic,vector<Region>&RegionVec)
 	}
 }
 
+
+
+
 void ProcessImg(C24BitMap&CPic, vector<Region>&RegionVec)
 {
 
@@ -330,4 +333,54 @@ void GetCurveCornerPoint(C24BitMap &gColorImg,
 		  }
    
 }
+
+//#################################################################################################
+void GetBlackPicRegion(C256BitMap &Pic, vector<Region>&RegionVec)
+{
+	int i,j;
+	int ww,hh;
+	ww = Pic.Width;
+	hh = Pic.Height;
+	ConnectedComponents Cp;
+		
+	Cp.scan_width  = Pic.LineWidth;
+	Cp.scan_height = Pic.Height;
+	
+	Cp.left  = 0;
+	Cp.right = ww-1;
+	Cp.top   = 0;
+	Cp.bottom= hh-1; 
+	Cp.pix_threshold =128;		
+	Cp.alloc_space();
+	
+	//Cp.label_image(Pic.Buffer,1);
+	Cp.label_image(Pic.Buffer,1);
+	int obnum=Cp.relabel_image(); 
+	Cp.GetResultGroup(); 	 
+	//CPic.FormatF(Pic.Width,Pic.Height);
+	//CPic.CleanPic(0);
+	
+	RegionVec.clear();
+	RegionVec.resize(Cp.ResultVec.size());
+	
+	for( i=0;i<Cp.ResultVec.size();i++)
+	{
+		 
+		if(Cp.ResultVec[i].PtVec.size()< PONIS_MINCOUNT )
+			continue;
+		
+		//CPic.RandPenColor();
+		Loopj(Cp.ResultVec[i].PtVec.size())
+		{
+			//CPic.SigDot(Cp.ResultVec[i].PtVec[j].x,
+			//	CPic.Height-1-Cp.ResultVec[i].PtVec[j].y);
+			
+			RPoint Pt;
+			Pt.x = Cp.ResultVec[i].PtVec[j].x;
+			Pt.y = Pic.Height-1-Cp.ResultVec[i].PtVec[j].y;
+			RegionVec[i].PtVec.push_back(Pt);
+		}
+	}
+}
+
 #endif
