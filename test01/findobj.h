@@ -6,7 +6,7 @@
 // Warn about use of deprecated functions.
 #define GNUPLOT_DEPRECATE_WARN
 //#include "gnuplot-iostream.h"
-#define PONIS_MINCOUNT 6400
+#define PONIS_MINCOUNT 2000
 
 C24BitMap  gColorImg;
 C256BitMap GPic;
@@ -109,6 +109,20 @@ void AnalysisRegionObj(Region&Obj)
 		Mxy +=  (x * y * val); // / sum (I) 
 	}
 	
+	//	double Mxx,Myy,Mxy;
+    //Mxx = Myy = Mxy = 0;
+	
+	for (i=0; i<Obj.PtVec.size();i++)
+	{
+		x  = float(Obj.PtVec[i].x)-Obj.x;
+		y  = float(Obj.PtVec[i].y)-Obj.y;
+		val= 1;//Obj.PtVec[i].Flux;
+		Mxx +=  (x * x * val); // / sum (I)
+		Myy +=  (y * y * val); // / sum (I)
+		Mxy +=  (x * y * val); // / sum (I) 
+	}
+	
+	Obj.roundratio = sqrt(pow((Mxx - Myy), 2) + pow((2 * Mxy) , 2)) / (Mxx + Myy); 
 
 }
 
@@ -174,12 +188,14 @@ void GetBlackPicRegion(C256BitMap &Pic,C24BitMap&CPic,vector<Region>&RegionVec)
 	
 	RegionVec.clear();
 	RegionVec.resize(Cp.ResultVec.size());
-	
+	printf("=====================TTTTTT===========================\n");
 	for( i=0;i<Cp.ResultVec.size();i++)
 	{
-		 
+		
+
 		if(Cp.ResultVec[i].PtVec.size()< PONIS_MINCOUNT )
 			continue;
+		
 		
 		CPic.RandPenColor();
 		Loopj(Cp.ResultVec[i].PtVec.size())
@@ -192,6 +208,14 @@ void GetBlackPicRegion(C256BitMap &Pic,C24BitMap&CPic,vector<Region>&RegionVec)
 			Pt.y = CPic.Height-1-Cp.ResultVec[i].PtVec[j].y;
 			RegionVec[i].PtVec.push_back(Pt);
 		}
+		
+		AnalysisRegionObj(RegionVec[i]);
+		printf("obj pixels num: %i , %.4lf\n", RegionVec[i].PtVec.size() , RegionVec[i].roundratio );
+		
+		CPic.SetColor(0);
+		//if(RegionVec[i].roundratio < 0.01 )
+		if(i==2)	
+			CPic.DrawCircle(RegionVec[i].x, RegionVec[i].y, 2.0);//, double tp);
 	}
 }
 

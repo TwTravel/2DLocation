@@ -26,6 +26,7 @@ struct ObjInfo {
 	vector<fSPOINT> PtVec;
 	double thresh;
 	int left,right,top,bottom;
+	double roundratio;
 //	Pic_Position P;
 };
 

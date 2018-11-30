@@ -94,6 +94,7 @@ public:
 	double moments_[5];  // 一阶、二阶转动惯量(x, y, x^2, xy, y^2).
 	double variation_;	 // MSER 区域的variation.(稳定变化率)
 	double normal_variation;  // 修正后的MSER variation
+        double roundratio;
 
 //----------------------------------------------------------------------
 //-----------------区域的一些特征-------------------------------------

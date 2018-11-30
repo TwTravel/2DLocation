@@ -184,13 +184,21 @@ int main(int argc, char *argv[]) {
 		vector<int>      corner_idx;
         vector<RPoint>   corner;
         vector<RPoint>   shapecontour;
-	    GetCurveCornerPoint( CPic, RegionVec[0].ConvexHullPtVec, corner_idx, corner, shapecontour);
+		
+		Region ExtractBox;
+		ExtractBox =  RegionVec[2];
+		
+	    GetCurveCornerPoint( CPic, ExtractBox.ConvexHullPtVec, corner_idx, corner, shapecontour);
 		
 		C256BitMap GSubPic;
 		
-		AnalysisRegionObj(RegionVec[0]);
-		GSubPic.FormatF(RegionVec[0].right - RegionVec[0].left +1, RegionVec[0].bottom - RegionVec[0].top  +1);
 		
+		AnalysisRegionObj(ExtractBox);
+		GSubPic.FormatF(ExtractBox.right - ExtractBox.left +1, ExtractBox.bottom - ExtractBox.top  +1);
+		
+		
+		C24BitMap DrawPic;
+		DrawPic.FormatF(GSubPic.Width, GSubPic.Height);
 		
 		Loopi(GSubPic.Width)
 		    Loopj(GSubPic.Height)
@@ -199,13 +207,22 @@ int main(int argc, char *argv[]) {
                 uchar blue      = intensity.val[0];
                 uchar green     = intensity.val[1];
                 uchar red       = intensity.val[2];*/
-				C24PixVal Pix = get_pix_color(CPic,i+RegionVec[0].left, j+RegionVec[0].top);
-				* get_pix_color(GSubPic,i,j)= *Pix.r;
+				C24PixVal Pix = get_pix_color(CPic,i+ExtractBox.left, j+ExtractBox.top);
+				if((*Pix.r)< 80 )
+				* get_pix_color(GSubPic,i,j)= 0;
+			    else
+				* get_pix_color(GSubPic,i,j)= 255;	
 				// = red;
 				//*Pix.g = green;
 				//*Pix.b = blue;
 				
 			}
+		
+		vector<Region> RegionVec1;
+		GetBlackPicRegion(GSubPic, DrawPic, RegionVec1);
+		DrawPic.Save("temp.bmp");
+		//GetBlackPicRegion(C256BitMap &Pic, vector<Region>&RegionVec);
+		
 	    GSubPic.Save("Gbox.bmp");
 	    //CPic.Save("dest.bmp");
 		  
