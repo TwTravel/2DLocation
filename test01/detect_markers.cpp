@@ -3,7 +3,14 @@
 #include <iostream>
 #include "c24bitmap.h"
 #include "c256bitmap.h"
-
+//======================================================================
+#include "c24bitmap.h"
+#include "c256bitmap.h"
+#include <vector>
+#include "region.h"
+#include "mregion.h"
+#include "findobj.h"
+//======================================================================
 using namespace std;
 using namespace cv;
 
@@ -140,6 +147,10 @@ int main(int argc, char *argv[]) {
 	int i,j;
 	C24BitMap CPic;
 	CPic.FormatF(2592, 1944);
+	 
+	inputVideo.set(3,1600);//CV_CAP_PROP_FRAME_WIDTH, 1600);
+	inputVideo.set(4,1200);//CV_CAP_PROP_FRAME_HEIGHT, 1200);
+	
     while(inputVideo.grab()) {
         Mat image, imageCopy;
         inputVideo.retrieve(image);
@@ -159,8 +170,24 @@ int main(int argc, char *argv[]) {
 				*Pix.b = blue;
 				
 			}
-			
-	    CPic.Save("color_pic.bmp");
+		//=================================================
+        //#################################################
+        vector<Region> RegionVec;
+    	ProcessImg( CPic, RegionVec);
+	    int  i;
+				
+	    //Loopi(RegionVec[0].PtVec.size())
+	    //   CPic.SigDot(RegionVec[0].PtVec[i].x, RegionVec[0].PtVec[i].y);
+		//--------------------------------------------------
+		vector<int>      corner_idx;
+        vector<RPoint>   corner;
+        vector<RPoint>   shapecontour;
+	    GetCurveCornerPoint( CPic, RegionVec[0].ConvexHullPtVec, corner_idx, corner, shapecontour);
+	    //CPic.Save("dest.bmp");
+		  
+	    //CPic.Save("color_pic.bmp");
+		//#################################################
+		//#################################################
 		
         double tick = (double)getTickCount();
 
@@ -197,9 +224,45 @@ int main(int argc, char *argv[]) {
         if(showRejected && rejected.size() > 0)
             aruco::drawDetectedMarkers(imageCopy, rejected, noArray(), Scalar(100, 0, 255));
 
+		for(i =0; i< ids.size(); i++)
+		{
+		   float XX,YY;
+		  // XX = corners[i][0].x;
+		  // YY =;
+		   CPic.DrawLine(corners[i][0].x,corners[i][0].y,
+		                 corners[i][1].x,corners[i][1].y);	
+		}
+		CPic.SetColor(1);
+		
+		for(i =0; i< ids.size(); i++)
+		{
+		   float XX,YY;
+		  // XX = corners[i][0].x;
+		  // YY =;
+		   CPic.DrawLine(corners[i][1].x,corners[i][1].y,
+		                 corners[i][2].x,corners[i][2].y);	
+		}
+		
+		CPic.SetColor(2);
+		for(i =0; i< ids.size(); i++)
+		{
+		   float XX,YY;
+		  // XX = corners[i][0].x;
+		  // YY =;
+		   CPic.DrawLine(corners[i][2].x,corners[i][2].y,
+		                 corners[i][3].x,corners[i][3].y);	
+		}
+		CPic.Save("color_pic.bmp");
+		
+		exit(0);//<<<++++++++KH_Dec
+		
         imshow("out", imageCopy);
+		
+		
         char key = (char)waitKey(waitTime);
         if(key == 27) break;
+		
+		
     }
 
     return 0;

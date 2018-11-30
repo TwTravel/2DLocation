@@ -224,4 +224,110 @@ void ProcessImg(C24BitMap&CPic, vector<Region>&RegionVec)
 //	 exit(0);
 }
 
+
+///############################################################################
+//#############################################################################
+//#######################################################################
+int ResampleCurve(vector<RPoint>& input, vector<RPoint>& output, int nPoint)
+{
+	if( input.size() == 0 ) return -1;
+
+	int i; double full_length  = 0;
+	int nInPoints = int(input.size());
+	for( i=1; i<nInPoints; i++ )
+		full_length +=  RPointDistance(input[i-1], input[i] );
+
+	double crtdelta = full_length / (nPoint-1);
+	double cumdelta = 0; double cumlength = 0;
+
+	output.resize(nPoint);
+
+	int crt_idx = 0;
+	output[crt_idx] = input[0];
+	++crt_idx;
+	cumdelta += crtdelta;
+
+	for( i=1; i< nInPoints; i++ )
+	{
+		double crtlength = RPointDistance(input[i-1] , input[i]);
+		crtlength = max( 1e-5, crtlength );
+		cumlength += crtlength;
+
+		while ((cumlength>=cumdelta)&& (crt_idx<(nPoint-1)))
+		{
+			//add intersection
+			double alpha = (cumlength-cumdelta)/crtlength;
+			output[crt_idx].x = alpha*input[i-1].x+(1-alpha)*input[i].x;
+			output[crt_idx].y = alpha*input[i-1].y+(1-alpha)*input[i].y;
+			
+			++crt_idx;
+			cumdelta += crtdelta;
+		}
+	}
+
+	//last point
+	output[crt_idx] = input[nInPoints-1];
+
+	return 0;
+
+}
+
+
+void GetCurveCornerPoint(C24BitMap &gColorImg, 
+                        const vector<RPoint> & HullPtVec,
+                        vector<int>&corner_idx,
+                        vector<RPoint> &corner,
+                        vector<RPoint> &shapecontour)
+{
+   int i,j;
+   vector<RPoint>  temp_pt_vec;
+   temp_pt_vec = HullPtVec;
+   temp_pt_vec.push_back(HullPtVec[0]);
+   int resample_size = 121;
+   ResampleCurve(temp_pt_vec, shapecontour, resample_size);
+   
+   //================================================================
+   vector < int   >  bend_point;  bend_point.resize(resample_size);
+   vector < double> cornerangle; cornerangle.resize(resample_size);
+   int max_angle(0), max_angle_index(0);
+   //================================================================
+   //================================================================
+   double jj_      = 0;
+   int start_point = 0;
+    
+   for(; jj_ < double(shapecontour.size()) + (start_point); jj_++)
+          {
+                  j = int( jj_+ shapecontour.size())%shapecontour.size();
+                  int Idx1 = (j + shapecontour.size() - 6)%shapecontour.size();
+                  int Idx2 = (j + shapecontour.size() + 6)%shapecontour.size();
+
+                  RPoint counter_Pt1, counter_Pt2, counter_Pt3, Dir1, Dir2;
+                  counter_Pt1 = shapecontour[Idx1];
+                  counter_Pt2 = shapecontour[j];
+                  counter_Pt3 = shapecontour[Idx2];
+
+                  Dir1.x = counter_Pt2.x - counter_Pt1.x; Dir1.y = counter_Pt2.y - counter_Pt1.y;
+                  Dir2.x = counter_Pt3.x - counter_Pt2.x; Dir2.y = counter_Pt3.y - counter_Pt2.y;
+
+                  double angle = acos( fabs( Dir1.x * Dir2.x + Dir1.y * Dir2.y )
+                               / sqrt( Dir1.x * Dir1.x + Dir1.y * Dir1.y)
+                                           / sqrt( Dir2.x * Dir2.x + Dir2.y * Dir2.y) ) * 180.0 / 3.1415926;
+
+                  cornerangle[j] = angle;
+                  gColorImg.PenColor.R =255; gColorImg.PenColor.G =255;
+
+                  if( angle > 15 )
+                  {
+                         gColorImg.DrawCircle( shapecontour[j].x,
+                                               shapecontour[j].y, 4.5 );
+                         bend_point[j] = 1;
+                         if( cornerangle[j] > max_angle)
+                         {
+                                 max_angle       = cornerangle[j] ;
+                                 max_angle_index = j;
+                         }
+                  }
+		  }
+   
+}
 #endif
