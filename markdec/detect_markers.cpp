@@ -167,7 +167,7 @@ int main(int argc, char *argv[]) {
         inputVideo.open(video);
         waitTime = 0;
     } else {
-        inputVideo.open(1);
+        inputVideo.open(2);
         waitTime = 10;
     }
 
