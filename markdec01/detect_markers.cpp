@@ -1,48 +1,17 @@
-/*
-By downloading, copying, installing or using the software you agree to this
-license. If you do not agree to this license, do not download, install,
-copy or use the software.
-
-                          License Agreement
-               For Open Source Computer Vision Library
-                       (3-clause BSD License)
-
-Copyright (C) 2013, OpenCV Foundation, all rights reserved.
-Third party copyrights are property of their respective owners.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-  * Redistributions of source code must retain the above copyright notice,
-    this list of conditions and the following disclaimer.
-
-  * Redistributions in binary form must reproduce the above copyright notice,
-    this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution.
-
-  * Neither the names of the copyright holders nor the names of the contributors
-    may be used to endorse or promote products derived from this software
-    without specific prior written permission.
-
-This software is provided by the copyright holders and contributors "as is" and
-any express or implied warranties, including, but not limited to, the implied
-warranties of merchantability and fitness for a particular purpose are
-disclaimed. In no event shall copyright holders or contributors be liable for
-any direct, indirect, incidental, special, exemplary, or consequential damages
-(including, but not limited to, procurement of substitute goods or services;
-loss of use, data, or profits; or business interruption) however caused
-and on any theory of liability, whether in contract, strict liability,
-or tort (including negligence or otherwise) arising in any way out of
-the use of this software, even if advised of the possibility of such damage.
-*/
-
-
 #include <opencv2/highgui.hpp>
 #include <opencv2/aruco.hpp>
+
+#include <opencv2/core/types_c.h>
+#include <opencv2/core.hpp>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/calib3d.hpp>
+#include <opencv2/calib3d/calib3d_c.h>
+
 #include <iostream>
 
 using namespace std;
 using namespace cv;
+//using namespace cv;
 
 namespace {
 const char* about = "Basic marker detection";
@@ -104,6 +73,80 @@ static bool readDetectorParameters(string filename, Ptr<aruco::DetectorParameter
     return true;
 }
 
+
+/*void projectPoints_dm( InputArray _opoints,
+                        InputArray _rvec,
+                        InputArray _tvec,
+                        InputArray _cameraMatrix,
+                        InputArray _distCoeffs,
+                        OutputArray _ipoints,
+                        OutputArray _jacobian,
+                        double aspectRatio )
+{
+    Mat opoints = _opoints.getMat();
+    int npoints = opoints.checkVector(3), depth = opoints.depth();
+    CV_Assert(npoints >= 0 && (depth == CV_32F || depth == CV_64F));
+
+    CvMat dpdrot, dpdt, dpdf, dpdc, dpddist;
+    CvMat *pdpdrot=0, *pdpdt=0, *pdpdf=0, *pdpdc=0, *pdpddist=0;
+
+    CV_Assert( _ipoints.needed() );
+
+    _ipoints.create(npoints, 1, CV_MAKETYPE(depth, 2), -1, true);
+    Mat imagePoints = _ipoints.getMat();
+    CvMat c_imagePoints = cvMat(imagePoints);
+    CvMat c_objectPoints = cvMat(opoints);
+    Mat cameraMatrix = _cameraMatrix.getMat();
+
+    Mat rvec = _rvec.getMat(), tvec = _tvec.getMat();
+    CvMat c_cameraMatrix = cvMat(cameraMatrix);
+    CvMat c_rvec = cvMat(rvec), c_tvec = cvMat(tvec);
+
+    double dc0buf[5]={0};
+    Mat dc0(5,1,CV_64F,dc0buf);
+    Mat distCoeffs = _distCoeffs.getMat();
+    if( distCoeffs.empty() )
+        distCoeffs = dc0;
+    CvMat c_distCoeffs = cvMat(distCoeffs);
+    int ndistCoeffs = distCoeffs.rows + distCoeffs.cols - 1;
+
+    Mat jacobian;
+    if( _jacobian.needed() )
+    {
+        _jacobian.create(npoints*2, 3+3+2+2+ndistCoeffs, CV_64F);
+        jacobian = _jacobian.getMat();
+        pdpdrot = &(dpdrot = cvMat(jacobian.colRange(0, 3)));
+        pdpdt = &(dpdt = cvMat(jacobian.colRange(3, 6)));
+        pdpdf = &(dpdf = cvMat(jacobian.colRange(6, 8)));
+        pdpdc = &(dpdc = cvMat(jacobian.colRange(8, 10)));
+        pdpddist = &(dpddist = cvMat(jacobian.colRange(10, 10+ndistCoeffs)));
+    }
+
+    cvProjectPoints2( &c_objectPoints, &c_rvec, &c_tvec, &c_cameraMatrix, &c_distCoeffs,
+                      &c_imagePoints, pdpdrot, pdpdt, pdpdf, pdpdc, pdpddist, aspectRatio );
+}*/
+
+void kkdrawAxis(InputOutputArray _image, InputArray _cameraMatrix, InputArray _distCoeffs,
+              InputArray _rvec, InputArray _tvec, float length) {
+
+    CV_Assert(_image.getMat().total() != 0 &&
+              (_image.getMat().channels() == 1 || _image.getMat().channels() == 3));
+    CV_Assert(length > 0);
+
+    // project axis points
+    vector< Point3f > axisPoints;
+    axisPoints.push_back(Point3f(0, 0, 0));
+    axisPoints.push_back(Point3f(length, 0, 0));
+    axisPoints.push_back(Point3f(0, length, 0));
+    axisPoints.push_back(Point3f(0, 0, length));
+    vector< Point2f > imagePoints;
+    projectPoints(axisPoints, _rvec, _tvec, _cameraMatrix, _distCoeffs, imagePoints);
+
+    // draw axis lines
+    line(_image, imagePoints[0], imagePoints[1], Scalar(0, 0, 255), 3);
+    line(_image, imagePoints[0], imagePoints[2], Scalar(0, 255, 0), 3);
+    line(_image, imagePoints[0], imagePoints[3], Scalar(255, 0, 0), 3);
+}
 
 
 /**
@@ -205,13 +248,13 @@ int main(int argc, char *argv[]) {
 
             if(estimatePose) {
                 for(unsigned int i = 0; i < ids.size(); i++)
-                    aruco::drawAxis(imageCopy, camMatrix, distCoeffs, rvecs[i], tvecs[i],
+                    kkdrawAxis(imageCopy, camMatrix, distCoeffs, rvecs[i], tvecs[i],
                                     markerLength * 0.5f);
             }
         }
 
-        if(showRejected && rejected.size() > 0)
-            aruco::drawDetectedMarkers(imageCopy, rejected, noArray(), Scalar(100, 0, 255));
+        //if(showRejected && rejected.size() > 0)
+        //    aruco::drawDetectedMarkers(imageCopy, rejected, noArray(), Scalar(100, 0, 255));
 
         imshow("out", imageCopy);
         char key = (char)waitKey(waitTime);
