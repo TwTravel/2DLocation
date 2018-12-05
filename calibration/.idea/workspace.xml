@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="83ddfe7c-617a-44d0-b50e-2ca20823edd8" name="Default Changelist" comment="" />
+    <list default="true" id="83ddfe7c-617a-44d0-b50e-2ca20823edd8" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../markdec/env.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../markdec/env.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../markdec02/Thumbs.db" beforeDir="false" afterPath="$PROJECT_DIR$/../markdec02/Thumbs.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../markdec03/2018-12-05-104739.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../markdec03/decmarker" beforeDir="false" afterPath="$PROJECT_DIR$/../markdec03/decmarker" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../markdec03/marker.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/../markdec03/marker.jpg" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -13,8 +19,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/calibration.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="18" column="19" lean-forward="true" selection-start-line="18" selection-start-column="19" selection-end-line="18" selection-end-column="19" />
+            <state relative-caret-position="330">
+              <caret line="22" column="5" selection-start-line="22" selection-start-column="5" selection-end-line="22" selection-end-column="5" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -156,8 +162,8 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/calibration.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="18" column="19" lean-forward="true" selection-start-line="18" selection-start-column="19" selection-end-line="18" selection-end-column="19" />
+        <state relative-caret-position="330">
+          <caret line="22" column="5" selection-start-line="22" selection-start-column="5" selection-end-line="22" selection-end-column="5" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
