@@ -166,11 +166,11 @@ int main(int argc, char *argv[]) {
         if(ids.size() > 0) {
             aruco::drawDetectedMarkers(imageCopy, corners, ids);
 
-            if(estimatePose) {
+           /* if(estimatePose) {
                 for(unsigned int i = 0; i < ids.size(); i++)
                     aruco::drawAxis(imageCopy, camMatrix, distCoeffs, rvecs[i], tvecs[i],
                                     markerLength * 0.5f);
-            }
+            }*/
 			
 			for(unsigned int i = 0; i < ids.size(); i++)
 			{
@@ -180,6 +180,9 @@ int main(int argc, char *argv[]) {
 				  Rodrigues(rvecs[i], rotM);  //将旋转向量变换成旋转矩阵
                   Rodrigues(tvecs[i], rotT);
 				  rotMT =  rotM*rotT;
+				  
+				   aruco::drawAxis(imageCopy, camMatrix, distCoeffs, rvecs[i], tvecs[i],
+                                    markerLength * 0.5f);
 			   }
 			}
         }
