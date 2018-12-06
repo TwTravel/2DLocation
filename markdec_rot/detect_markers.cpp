@@ -2,6 +2,7 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/aruco.hpp>
 #include <opencv2/calib3d.hpp>
+#include "HandEyeCalib.hpp"
 #include <iostream>
 
 using namespace std;
@@ -181,8 +182,20 @@ int main(int argc, char *argv[]) {
                   Rodrigues(tvecs[i], rotT);
 				  rotMT =  rotM*rotT;
 				  
-				   aruco::drawAxis(imageCopy, camMatrix, distCoeffs, rvecs[i], tvecs[i],
+				  aruco::drawAxis(imageCopy, camMatrix, distCoeffs, rvecs[i], tvecs[i],
                                     markerLength * 0.5f);
+									
+			    
+				  for(i=0;i<200;i++)
+                  {char filename[30];
+                   sprintf(filename,"img%06i.jpg",i);  			  
+                   FILE *fh = fopen(filename,"r");
+                   if(fh == NULL){
+                   //TODO   
+                      imwrite(filename, image);	
+                      exit(0);					  
+                    }
+				  }
 			   }
 			}
         }
