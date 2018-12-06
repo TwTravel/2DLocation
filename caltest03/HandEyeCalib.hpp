@@ -34,7 +34,8 @@ public:
      ~HandEyeCalib();
      
      int init(const std::vector<cv::Mat>& cMo_in, const std::vector<cv::Mat>& wMe_in);
-     
+     int init(const std::vector<vpHomogeneousMatrix>& cMo_in, const std::vector<vpHomogeneousMatrix>& wMe_in);
+	 
      int run(cv::Mat& eMc_ou);
 
 private:

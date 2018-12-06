@@ -82,8 +82,57 @@ static bool readDetectorParameters(string filename, Ptr<aruco::DetectorParameter
     return true;
 }
 
+ 
+ vpHomogeneousMatrix toVispHomogeneousMatrix(double position_x, double  position_y,double  position_z,
+          double orientation_x, double orientation_y, double  orientation_z, double  orientation_w    )
+ {
+    vpHomogeneousMatrix mat;
+    vpTranslationVector vec( position_x, position_y, position_z);
+    vpQuaternionVector   q(orientation_x, orientation_y, orientation_z, orientation_w);
+    mat.buildFrom(vec,q);
 
+    return mat;
+ }
+ 
+ void quatFromAngularVelocity(Vec3d rvec, 
+ double& orientation_x, double& orientation_y, 
+ double& orientation_z, double& orientation_w)
+{
+    const float x = rvec[0];
+    const float y = rvec[1];
+    const float z = rvec[2];
+    const float angle = sqrt(x*x + y*y + z*z);  //module of angular velocity
 
+    if (angle > 0.0) //the formulas from the link
+    {
+        orientation_x = x*sin(angle/2.0f)/angle;
+        orientation_y = y*sin(angle/2.0f)/angle;
+        orientation_z = z*sin(angle/2.0f)/angle;
+        orientation_w = cos(angle/2.0f);
+    }else    //to avoid illegal expressions
+    {
+       orientation_x = orientation_y = orientation_z = 0;
+       orientation_w = 1.0f;
+    }
+}
+
+ vpHomogeneousMatrix toVispHomogeneousMatrix(Vec3d tvec, Vec3d rvec   )
+{
+	double  position_x, position_y, position_z,
+    orientation_x,  orientation_y, orientation_z, orientation_w ;
+	
+   position_x = tvec[0];
+   position_y = tvec[1];
+   position_z = tvec[2];
+  quatFromAngularVelocity( rvec, 
+   orientation_x,   orientation_y, 
+   orientation_z,   orientation_w) ;
+  
+ return toVispHomogeneousMatrix( position_x,  position_y,  position_z,
+   orientation_x,   orientation_y, 
+   orientation_z,   orientation_w );
+// orientation_x, double orientation_y, double  orientation_z, double  orientation_w 
+ }
 /**
  */
 int main(int argc, char *argv[]) {
@@ -152,8 +201,8 @@ int main(int argc, char *argv[]) {
     double totalTime = 0;
     int totalIterations = 0;
     
-	const std::vector<cv::Mat> cMo_in; 
-	const std::vector<cv::Mat> wMe_in;
+	const std::vector<vpHomogeneousMatrix> cMo_in; 
+	const std::vector<vpHomogeneousMatrix> wMe_in;
     //while(1) 
 	for(int ii=1;ii<10;ii++)
 	{
@@ -193,7 +242,7 @@ int main(int argc, char *argv[]) {
                 for(unsigned int i = 0; i < ids.size(); i++)
 					if(ids[i]==101)
                     {
-						Mat rotM, rotT, rotMT, rotRobot; 
+						/*Mat rotM, rotT, rotMT, rotRobot; 
 				        Rodrigues(rvecs[i], rotM);  //将旋转向量变换成旋转矩阵
                         Rodrigues(tvecs[i], rotT);
 				        rotMT =  rotM*rotT;
@@ -203,10 +252,13 @@ int main(int argc, char *argv[]) {
 						robot_pos[0] = robotpos_array[ii-1][0];
 						robot_pos[1] = robotpos_array[ii-1][1];
 						robot_pos[2] = robotpos_array[ii-1][2];
-						Rodrigues(robot_pos, rotRobot);
+						Rodrigues(robot_pos, rotRobot);*/
 						
-						cMo_in.push_back(rotMT);
-						wMe_in.push_back(rotRobot);
+						cMo_in.push_back(toVispHomogeneousMatrix(tvecs[i],rvecs[i]));
+						wMe_in.push_back(toVispHomogeneousMatrix(robotpos_array[ii-1][0],
+						                                         robotpos_array[ii-1][1],
+																 robotpos_array[ii-1][2],
+																 0,0,0,1.0));
 					}
             }
         }
@@ -214,9 +266,9 @@ int main(int argc, char *argv[]) {
         if(showRejected && rejected.size() > 0)
             aruco::drawDetectedMarkers(imageCopy, rejected, noArray(), Scalar(100, 0, 255));
 
-        imshow("out", imageCopy);
-        char key = (char)waitKey(waitTime);
-        if(key == 27) break;
+        //imshow("out", imageCopy);
+        //char key = (char)waitKey(waitTime);
+        //if(key == 27) break;
     }
 	
     hand_eye_cal.init(  cMo_in,   wMe_in);

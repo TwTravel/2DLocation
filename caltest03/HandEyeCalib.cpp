@@ -10,7 +10,13 @@ HandEyeCalib::~HandEyeCalib()
 {
   
 }
-     
+
+
+int HandEyeCalib::init(const std::vector<vpHomogeneousMatrix>& cMo_in, const std::vector<vpHomogeneousMatrix>& wMe_in)
+{
+	cMo_vis = cMo_in; 
+	wMe_vis = wMe_in;
+}	
      
 int HandEyeCalib::init(const std::vector<cv::Mat>& cMo_in, const std::vector<cv::Mat>& wMe_in)
 {
