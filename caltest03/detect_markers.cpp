@@ -124,6 +124,13 @@ static bool readDetectorParameters(string filename, Ptr<aruco::DetectorParameter
    position_x = tvec[0];
    position_y = tvec[1];
    position_z = tvec[2];
+   
+   double rx,ry,rz;
+   rx = rvec[0];
+   ry = rvec[1];
+   rz = rvec[2];
+   
+   printf("%.4lf,%.4lf,%.4lf,===%.4lf,%.4lf,%.4lf \n", position_x, position_y, position_z, rx, ry, rz);
   quatFromAngularVelocity( rvec, 
    orientation_x,   orientation_y, 
    orientation_z,   orientation_w) ;
@@ -253,11 +260,11 @@ int main(int argc, char *argv[]) {
 						robot_pos[1] = robotpos_array[ii-1][1];
 						robot_pos[2] = robotpos_array[ii-1][2];
 						Rodrigues(robot_pos, rotRobot);*/
-						
+						//printf("")
 						cMo_in.push_back(toVispHomogeneousMatrix(tvecs[i],rvecs[i]));
-						wMe_in.push_back(toVispHomogeneousMatrix(robotpos_array[ii-1][0],
-						                                         robotpos_array[ii-1][1],
-																 robotpos_array[ii-1][2],
+						wMe_in.push_back(toVispHomogeneousMatrix(-robotpos_array[ii-1][0],
+						                                         -robotpos_array[ii-1][1],
+																 -robotpos_array[ii-1][2],
 																 0,0,0,1.0));
 					}
             }

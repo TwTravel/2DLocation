@@ -1,0 +1,19 @@
+%YAML:1.0
+---
+calibration_time: "2018年11月30日 星期五 04时01分58秒"
+image_width: 1920
+image_height: 1080
+flags: 0
+camera_matrix: !!opencv-matrix
+   rows: 3
+   cols: 3
+   dt: d
+   data: [ 1391.7323, 0.0, 937,
+           0.0000000 , 1391.732543, 562,
+           0.0000000 , 0.0000000 ,1.0 ]
+distortion_coefficients: !!opencv-matrix
+   rows: 1
+   cols: 5
+   dt: d
+   data: [ 6.42165219e-05,-3.98417383e-05,1.27293589e-05,1.71453574e-05,3.97026026e-05 ]
+avg_reprojection_error: 1.1793338989564708e+02
