@@ -35,6 +35,33 @@ static bool readCameraParameters(string filename, Mat &camMatrix, Mat &distCoeff
 }
 
 
+void euler2quaternion(double euler_0, double euler_1, double euler_2) {
+	/*20130326MK convention: Bunge ZXZ, which represents the (3,1,3) case analyzed in: Diebel 2006
+	 Representing Attitude: Euler Angles, Unit Quaternions, and Rotation Vectors, James Diebel, Stanford University, Stanford, California 94301-9010, Email: diebel@stanford.edu
+	 //cos(a+b) = c(a+b) = cacb-sasb
+	 //cos(a-b) = c(a-b) = cacb+sasb
+	 //sin(a+b) = s(a+b) = sacb+casb
+	 //sin(a-b) = s(a-b) = sacb-casb
+	 */
+    printf("%.4lf, %.4lf, %.4lf \n", euler_0/3.1415926*180.0,  euler_1/3.1415926*180.0,  euler_2/3.1415926*180.0);
+	
+	double p1 = euler_0;
+	double t  = euler_1;
+	double p2 = euler_2;
+
+	double co1 = cos(t / 2);
+	double s1 = sin(t / 2);
+
+	//double test[4]={0};
+	//quaternion2Euler( p,test);
+    double q0,q1,q2,q3;
+	q0 = co1 * cos((p1 + p2) / 2);
+	q1 = s1 * cos((p1 - p2) / 2);
+	q2 = s1 * sin((p1 - p2) / 2);
+	q3 = co1 * sin((p1 + p2) / 2);
+	
+	printf("%.4lf, %.4lf, %.4lf, %.4lf\n", q0,q1,q2,q3);
+}
 
 /**
  */
@@ -167,8 +194,26 @@ int main(int argc, char *argv[]) {
 
             if(estimatePose) {
                 for(unsigned int i = 0; i < ids.size(); i++)
-                    aruco::drawAxis(imageCopy, camMatrix, distCoeffs, rvecs[i], tvecs[i],
+				{  aruco::drawAxis(imageCopy, camMatrix, distCoeffs, rvecs[i], tvecs[i],
                                     markerLength * 0.5f);
+								if(ids[i]==101)
+				{
+					double  position_x, position_y, position_z,
+				orientation_x,  orientation_y, orientation_z, orientation_w ;
+	
+				position_x = tvecs[i][0];
+				position_y = tvecs[i][1];
+				position_z = tvecs[i][2];
+   
+				double rx,ry,rz;
+				rx = rvecs[i][0];
+				ry = rvecs[i][1];
+				rz = rvecs[i][2];
+   
+				printf("%.4lf,%.4lf,%.4lf,===%.4lf,%.4lf,%.4lf \n", position_x, position_y, position_z, rx, ry, rz);
+				euler2quaternion(rx, ry, rz);
+				}
+				}
             }
         }
 

@@ -2,11 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="83ddfe7c-617a-44d0-b50e-2ca20823edd8" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../markdec/env.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../markdec/env.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../markdec02/Thumbs.db" beforeDir="false" afterPath="$PROJECT_DIR$/../markdec02/Thumbs.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../markdec03/2018-12-05-104739.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../markdec03/decmarker" beforeDir="false" afterPath="$PROJECT_DIR$/../markdec03/decmarker" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../markdec03/marker.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/../markdec03/marker.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../markdec04/markdec03/Thumbs.db" beforeDir="false" afterPath="$PROJECT_DIR$/../markdec04/markdec03/Thumbs.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../markdec04/markdec03/decmarker" beforeDir="false" afterPath="$PROJECT_DIR$/../markdec04/markdec03/decmarker" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../markdec04/markdec03/detect_markers.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../markdec04/markdec03/detect_markers.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../markdec04/markdec03/marker.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/../markdec04/markdec03/marker.jpg" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -15,8 +14,8 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file pinned="false" current-in-tab="true">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/calibration.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="330">
@@ -28,10 +27,33 @@
           </provider>
         </entry>
       </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/test01.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="60">
+              <caret line="4" selection-start-line="4" selection-end-line="33" selection-end-column="81" />
+            </state>
+          </provider>
+        </entry>
+      </file>
     </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/test01.py" />
+      </list>
+    </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="380" />
@@ -74,7 +96,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.test01">
     <configuration name="calibration" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="calibration" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -96,8 +118,30 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="test01" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="calibration" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/bin/python3.5" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test01.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.test01" />
         <item itemvalue="Python.calibration" />
       </list>
     </recent_temporary>
@@ -116,23 +160,23 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="-4" width="2495" height="1444" extended-state="6" />
+    <frame x="64" y="-11" width="2497" height="1452" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Favorites" side_tool="true" />
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.11286408" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Version Control" />
-      <window_info anchor="bottom" id="Python Console" />
-      <window_info anchor="bottom" id="Terminal" />
-      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.39939255" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32953683" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.39939255" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Version Control" order="7" />
+      <window_info anchor="bottom" id="Terminal" order="8" />
+      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
+      <window_info anchor="bottom" id="Python Console" order="10" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -167,6 +211,13 @@
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test01.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" selection-start-line="4" selection-end-line="33" selection-end-column="81" />
         </state>
       </provider>
     </entry>
