@@ -11,7 +11,8 @@
 C24BitMap  gColorImg;
 C256BitMap GPic;
 C24BitMap  DispPic;
-
+void GetBlackPicRegion(C256BitMap &Pic,C24BitMap&CPic,vector<Region>&RegionVec);
+void GetObjContourColor(vector<Region> & RVec,C24BitMap&CPic,vector<int>&LabelVec);
 void RGB2HSV(double r, double g, double b, double &h, double &s,double &v)
 {
    double themin,themax,delta;
@@ -67,7 +68,22 @@ void GetGrayImage(C24BitMap&CPic,C256BitMap &GPic)
 
 void GetBallCenter(C256BitMap &GPic, double &x,double &y)
 {
-	double cx,cy,num;
+	C24BitMap CPic;
+	CPic.FormatF(GPic.Width, GPic.Height);
+	vector<Region> RegionVec;
+	//GetBlackPicRegion(GPic, CPic, RegionVec);
+	
+	RegionVec.clear();
+    vector<int> LabelVec;
+    GetBlackPicRegion( GPic, CPic, RegionVec);
+    LabelVec.clear();
+    GetObjContourColor(RegionVec, CPic, LabelVec);
+	if(RegionVec.size()>0)
+	{
+		x = RegionVec[0].x;
+		y = RegionVec[0].y;
+	}
+	/*double cx,cy,num;
 	 cx = cy = num =0;
 	 int i,j;
 	for (i = 0; i< GPic.Width; i++)
@@ -92,7 +108,7 @@ void GetBallCenter(C256BitMap &GPic, double &x,double &y)
 			 num+=1.0;
 		}			
 	 }
-	 x = cx/num; y= cy/num;
+	 x = cx/num; y= cy/num;*/
 }
 void GetGrayImageYellow(C24BitMap&CPic, C256BitMap &GPic)
 {
@@ -109,11 +125,11 @@ void GetGrayImageYellow(C24BitMap&CPic, C256BitMap &GPic)
 		 double  h, s, v;
 		 RGB2HSV(R, G, B, h, s, v);
  
-        if( ( fabs(h - 50) < 15 ) &&  (( s * 255.0) > 180) && ( v > 120.0) )
+        if( ( fabs(h - 50) < 15 ) &&  (( s * 255.0) > 140) && ( v > 120.0) )
 		{
 			val = 0;
-			//for(t=-10;t<10;t++)
-			//{*get_pix_color(GPic, i+t, j) =0;}
+			for(t=-3;t<3;t++)
+			{*get_pix_color(GPic, i+t, j) =0;}
 		   
 		}
 		else
