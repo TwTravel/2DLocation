@@ -121,6 +121,17 @@ Mat PerspectiveTrans(Point2f* scrPoints, Point2f* dstPoints)
 }
 /**
  */
+double GetAngle(double x1,double y1, double x2,double y2)
+{
+  double offsetY = -(y2 - y1);
+  double offsetX =   x2 - x1;
+  
+  double angle =  acos( offsetY /sqrt( offsetY * offsetY + offsetX * offsetX)) *180.0/3.1415826;
+  if(angle<0)angle+= 360.0;
+  printf("%.3lf\n",angle);
+  
+}
+
 int main(int argc, char *argv[]) {
 	
 	InitTextMerge();
@@ -205,12 +216,14 @@ int main(int argc, char *argv[]) {
 	//CPic.FormatF(2592, 1944);
 	//inputVideo.set(3,1600);//CV_CAP_PROP_FRAME_WIDTH, 1600);
 	//inputVideo.set(4,1200);//CV_CAP_PROP_FRAME_HEIGHT, 1200);
-	
+	int frame_count(0);
     while(inputVideo.grab()) {
         Mat image, imageCopy;
         inputVideo.retrieve(image);
-
-		
+        
+		frame_count ++;
+		if(frame_count<10)
+		   continue;
 		
 		Loopi(CPic.Width)
 		    Loopj(CPic.Height)
@@ -241,7 +254,7 @@ int main(int argc, char *argv[]) {
 	     transformPoint(xx,yy, Mt );
 		 MergeTxtStrNUM(CPic, ObjCenterX -20 , ObjCenterY-20,
 			  23, xx, yy,0, 0, 255); 
-					   
+		double y_xx = xx; double y_yy = yy;			   
 	    int  i;
 				
 	    //Loopi(RegionVec[0].PtVec.size())
@@ -302,7 +315,118 @@ int main(int argc, char *argv[]) {
 		
 	    GSubPic.Save("Gbox.bmp");
 		
-		for(i=0; i< RegionVec1.size(); i++)
+		double ratio = 0;
+		int Idx  = 0;
+		RPoint RoundPt; int RoundIdx;
+		RPoint SemCkPt; int SemCkIdx;
+		///============================== get round ratio =============================
+		for( i = 0; i < RegionVec1.size(); i ++ )
+		{
+			double val = double( RegionVec1[i].PtVec.size() )/double( RegionVec1[i].ContourPtVec.size() ); 
+			printf("%.2lf", val);
+			
+			if( ratio < val )
+			{
+			   Idx   = i;
+			   ratio = val; 
+			   RoundIdx = i;
+			}
+			
+			printf("%i, %i\n", i,  RegionVec1[i].PtVec.size() );
+		}
+			
+		//#############################################################
+		
+		//CPic.SetColor(0);
+	     CPic.DrawCircle(ExtractBox.left + RegionVec1[Idx].x, 
+				                 ExtractBox.top + RegionVec1[Idx].y, 5, 0.8);
+		 CPic.SetColor(1);
+	     CPic.DrawCircle(ExtractBox.left + RegionVec1[Idx].x, 
+				                 ExtractBox.top + RegionVec1[Idx].y, 3, 0.8);
+				
+         xx = ExtractBox.left + RegionVec1[Idx].x;
+	     yy = ExtractBox.top  + RegionVec1[Idx].y;
+		 RoundPt.x =  xx;
+		 RoundPt.y =  yy;
+	     transformPoint(xx,yy, Mt );
+		 MergeTxtStrNUM(CPic, ExtractBox.left + RegionVec1[Idx].x ,
+				                     ExtractBox.top  + RegionVec1[Idx].y ,
+			                         23, xx, yy,0, 0, 255);
+	    
+		printf("center circle %.2lf,%.2lf\n",xx,yy);						 
+	    //#############################################################
+		//=========================get half circle=====================
+        double maxptnum = -1;
+		//SemCkIdx
+		for( i=0 ; i< RegionVec1.size() ; i++ )
+		{
+		    double val =   RegionVec1[i].PtVec.size() ; 
+			if( maxptnum < val )
+			{
+			   SemCkIdx  = i;
+			   maxptnum  = val; 
+			}	 
+			//printf("%i, %i\n", i,  RegionVec1[i].PtVec.size() );		
+		}
+		
+		 CPic.DrawCircle(ExtractBox.left + RegionVec1[SemCkIdx].x, 
+				          ExtractBox.top + RegionVec1[SemCkIdx].y, 8, 0.8);
+						  
+		xx = ExtractBox.left + RegionVec1[SemCkIdx].x;
+        yy = ExtractBox.top  + RegionVec1[SemCkIdx].y;		
+		transformPoint(xx,yy, Mt );
+		printf("center semicircle %.2lf,%.2lf\n",xx,yy);
+        int BoxIdx;		
+		for( i=0; i< RegionVec1.size() ; i++ )
+		{
+			double val =   RegionVec1[i].PtVec.size() ; 
+			
+			if( val > 0.85 )
+			{
+			   if( i!=SemCkIdx && i!= RoundIdx)
+			   {
+				   double val = double( RegionVec1[i].PtVec.size() )/double( RegionVec1[i].ContourPtVec.size() ); 
+				   if( val >16)
+				   {
+					   BoxIdx = i;
+					   break;
+				   }
+			   }
+			}
+			
+		}
+		
+		 CPic.SetColor(3);
+		 CPic.DrawCircle(ExtractBox.left + RegionVec1[BoxIdx].x, 
+				         ExtractBox.top  + RegionVec1[BoxIdx].y, 8, 0.8);
+						  
+		 CPic.DrawLine(ExtractBox.left + RegionVec1[BoxIdx].x,    ExtractBox.top  + RegionVec1[BoxIdx].y,
+		             ExtractBox.left + RegionVec1[RoundIdx].x ,  ExtractBox.top  + RegionVec1[RoundIdx].y );
+					
+		
+        xx = ExtractBox.left + RegionVec1[BoxIdx].x;
+        yy = ExtractBox.top + RegionVec1[BoxIdx].y;		
+		transformPoint(xx,yy, Mt );
+		printf("center box: %.2lf,%.2lf\n",xx,yy);
+		
+		//double temp_x,temp_y;
+		xx = ExtractBox.left + ((RegionVec1[BoxIdx].x + RegionVec1[RoundIdx].x)/2+  RegionVec1[SemCkIdx].x)/2;
+		yy = ExtractBox.top  + ((RegionVec1[BoxIdx].y + RegionVec1[RoundIdx].y)/2+  RegionVec1[SemCkIdx].y)/2;
+		
+		CPic.DrawCircle(xx,yy,5);
+		transformPoint(xx,yy, Mt );
+		printf("center cube: %.2lf,%.2lf\n", xx, yy);
+		
+		 GetAngle( RegionVec1[RoundIdx].x,   RegionVec1[RoundIdx].y,
+		           RegionVec1[BoxIdx].x,     RegionVec1[BoxIdx].y); 
+		 
+		// 		double y_xx = xx; double y_yy = yy;	
+				
+		printf("round block: %.2lf,%.2lf\n",y_xx,y_yy);		
+		//SemCkIdx
+		
+		//#############################################################
+		/*for(i=0; i< RegionVec1.size(); i++)
 		{
 			double ratio = double(RegionVec1[i].PtVec.size())/double(RegionVec1[i].ContourPtVec.size()); 
 			printf("obj perimeter%i,  area%i,%.2lf\n", RegionVec1[i].ContourPtVec.size(), RegionVec1[i].PtVec.size(),
@@ -328,7 +452,7 @@ int main(int argc, char *argv[]) {
 								 
 			}
 			MergeTxtStrNUM(DrawPic, RegionVec1[i].x,RegionVec1[i].y,36, i,255,0,0);
-		}
+		}*/
 		
 		DrawPic.Save("temp.bmp");
 	    //CPic.Save("dest.bmp");
@@ -409,7 +533,7 @@ int main(int argc, char *argv[]) {
 	       transformPoint(xx,yy, Mt );
 		    MergeTxtStrNUM(CPic, corners[i][3].x -20 ,corners[i][3].y,
 			16, xx, yy,0,255, 0); 
-		    printf("%lf,%lf,%i\n",corners[i][3].x ,corners[i][3].y,ids[i]);
+		    //printf("%lf,%lf,%i\n",corners[i][3].x ,corners[i][3].y,ids[i]);
 		}
 		CPic.Save("color_pic.bmp");
 		

@@ -119,12 +119,19 @@ void GetGrayImageYellow(C24BitMap&CPic, C256BitMap &GPic)
 	for (i = 0; i< CPic.Width; i++)
 	 for (j = 0; j < CPic.Height; j++)
 	 {
+		 
+		 if(j>1500)
+		 {
+			 *get_pix_color(GPic, i, j) = 255;
+			 continue;
+		 }
+			 
 		 C24PixVal  Pix = get_pix_color(CPic, i, j);
 		 double val, val_min, val_max, R, G, B;
 		 R = *Pix.r; G = *Pix.g; B = *Pix.b;
 		 double  h, s, v;
 		 RGB2HSV(R, G, B, h, s, v);
- 
+        
         if( ( fabs(h - 50) < 15 ) &&  (( s * 255.0) > 140) && ( v > 120.0) )
 		{
 			val = 0;
