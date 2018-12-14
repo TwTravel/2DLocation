@@ -2,11 +2,25 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/aruco.hpp>
 #include <iostream>
+#include <opencv2/calib3d.hpp>
 
 using namespace std;
 using namespace cv;
 
+ void GetQuaternion(cv::Mat & RotationMat) {
+	
+	double *Mat0 = RotationMat.ptr<double>(0);//获取第一行的首地址
+	double *Mat1 = RotationMat.ptr<double>(1);
+	double *Mat2 = RotationMat.ptr<double>(2);
+//double A = data[0], B = data[1], C = data[2], D = data[3], E = data[4], F = data[5];
 
+	double w = sqrt(1.0 + Mat0[0] + Mat1[1] + Mat2[2]) / 2.0;
+	double w4 = (4.0 * w);
+	double x = (Mat2[1] - Mat1[2]) / w4 ;
+	double y = (Mat0[2] - Mat2[0]) / w4 ;
+	double z = (Mat1[0] - Mat0[1]) / w4 ;
+	printf("####%.3lf, %.3lf, %.3lf, %.3lf #####\n", w, x, y, z);
+}
 
 void euler2quaternion(double euler_0, double euler_1, double euler_2) {
 	/*20130326MK convention: Bunge ZXZ, which represents the (3,1,3) case analyzed in: Diebel 2006
@@ -199,7 +213,7 @@ int main(int argc, char *argv[]) {
                 for(unsigned int i = 0; i < ids.size(); i++)
 				{aruco::drawAxis(imageCopy, camMatrix, distCoeffs, rvecs[i], tvecs[i],
                                     markerLength * 0.5f);
-				if(ids[i]==101)
+				if(ids[i]==26)
 				{
 					double  position_x, position_y, position_z,
     orientation_x,  orientation_y, orientation_z, orientation_w ;
@@ -212,7 +226,12 @@ int main(int argc, char *argv[]) {
    rx = rvecs[i][0];
    ry = rvecs[i][1];
    rz = rvecs[i][2];
-   
+   rvecs[i][1] = rx;
+   rvecs[i][0] = -ry;
+   cv::Mat rotationMatrixCv;
+   Rodrigues(rvecs, rotationMatrixCv);
+   GetQuaternion(rotationMatrixCv);
+   //void calib::RodriguesToEuler(const cv::Mat& src, cv::Mat& dst, int argType)
    printf("%.4lf,%.4lf,%.4lf,===%.4lf,%.4lf,%.4lf \n", position_x, position_y, position_z, rx, ry, rz);
    euler2quaternion(rx, ry, rz);
 				}

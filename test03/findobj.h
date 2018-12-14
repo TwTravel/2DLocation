@@ -52,8 +52,13 @@ void GetGrayImage(C24BitMap&CPic,C256BitMap &GPic)
 		 R = *Pix.r; G = *Pix.g; B = *Pix.b;
 		 double  h, s, v;
 		 RGB2HSV(R, G, B, h, s, v);
- 
-        if( ( fabs(h - 35) < 15 ) &&  (( s * 255.0) > 60) && ( v > 150.0) )
+		 
+        if(j>1400)
+		{
+			*get_pix_color(GPic, i, j) = 255;
+			continue;
+		}
+        if( ( fabs(h - 45) < 15 ) &&  (( s * 255.0) > 80) && ( v > 90.0) )
 		{
 			val = 0;
 			for(t=-10;t<10;t++)
@@ -132,7 +137,7 @@ void GetGrayImageYellow(C24BitMap&CPic, C256BitMap &GPic)
 		 double  h, s, v;
 		 RGB2HSV(R, G, B, h, s, v);
         
-        if( ( fabs(h - 50) < 15 ) &&  (( s * 255.0) > 140) && ( v > 120.0) )
+        if( ( fabs(h - 52) < 16 ) &&  (( s * 255.0) > 170) && ( v > 100.0) )
 		{
 			val = 0;
 			for(t=-3;t<3;t++)
@@ -403,6 +408,8 @@ void GetCurveCornerPoint(C24BitMap &gColorImg,
    int i,j;
    vector<RPoint>  temp_pt_vec;
    temp_pt_vec = HullPtVec;
+   if(HullPtVec.size()==0)
+	     return;
    temp_pt_vec.push_back(HullPtVec[0]);
    int resample_size = 121;
    ResampleCurve(temp_pt_vec, shapecontour, resample_size);
