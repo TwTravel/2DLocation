@@ -1,0 +1,4 @@
+center circle: 0.9249,-0.0251
+center cube: 0.8937,0.0016
+  boxangle:3.10653
+round block: 0.9797,-0.2664

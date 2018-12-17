@@ -392,14 +392,15 @@ int main(int argc, char *argv[]) {
 				
          xx = ExtractBox.left + RegionVec1[Idx].x;
 	     yy = ExtractBox.top  + RegionVec1[Idx].y;
-		 RoundPt.x =  xx;
-		 RoundPt.y =  yy;
+
 	     transformPoint( xx , yy, Mt );//, 15.0);
 		//transformPoint( xx , yy, Mt  , 15.0);
 		 MergeTxtStrNUM(CPic, ExtractBox.left + RegionVec1[Idx].x ,
 				                     ExtractBox.top  + RegionVec1[Idx].y ,
 			                         23, xx, yy,0, 0, 255);
-	    
+	   
+	    RoundPt.x =  xx;
+		RoundPt.y =  yy;
 		printf("center circle %.4lf,%.4lf\n",xx/1000.0,yy/1000.0);						 
 	    //#############################################################
 		
@@ -445,7 +446,8 @@ int main(int argc, char *argv[]) {
 		FILE* file = fopen("/data/tzwang/temp/objinfo.txt","wt+");
 		printf("center cube: %.2lf,%.2lf\n", xx, yy);
 		
-		fprintf(file, "center cube: %.4lf,%.4lf\n", xx/1000.0, yy/1000.0);
+		fprintf(file, "center circle: %.4lf,%.4lf\n", RoundPt.x/1000.0, RoundPt.y/1000.0);
+		fprintf(file, "center cube: %.4lf,%.4lf\n  ", xx/1000.0, yy/1000.0);
 		
 		fprintf(file, "boxangle:%.5lf\n",
 		  GetAngle( RegionVec1[RoundIdx].x,   RegionVec1[RoundIdx].y,
