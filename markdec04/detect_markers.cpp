@@ -80,9 +80,7 @@ static bool readCameraParameters(string filename, Mat &camMatrix, Mat &distCoeff
 }
 
 
-
-/**
- */
+/***/
 static bool readDetectorParameters(string filename, Ptr<aruco::DetectorParameters> &params) {
     FileStorage fs(filename, FileStorage::READ);
     if(!fs.isOpened())
@@ -112,8 +110,7 @@ static bool readDetectorParameters(string filename, Ptr<aruco::DetectorParameter
 
 
 
-/**
- */
+/***/
 int main(int argc, char *argv[]) {
     CommandLineParser parser(argc, argv, keys);
     parser.about(about);

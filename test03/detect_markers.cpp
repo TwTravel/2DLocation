@@ -82,16 +82,16 @@ static bool readDetectorParameters(string filename, Ptr<aruco::DetectorParameter
 
 
 cv::Point2f src_points[] = { 
-		cv::Point2f(2009 , 428),
-		cv::Point2f(1935 , 1055),
-		cv::Point2f(607  , 918),
-		cv::Point2f(667  , 308) };
+		cv::Point2f(1985 , 405),
+		cv::Point2f(1922 , 1033),
+		cv::Point2f(590  , 919),
+		cv::Point2f(641  , 308) };
  
 cv::Point2f dst_points[] = {
-	 cv::Point2f( 1000, -300),
-     cv::Point2f( 650,  -300),
-     cv::Point2f( 650,  450),
-     cv::Point2f( 1000, 450),
+	 cv::Point2f( 1100, -300),
+     cv::Point2f( 750,  -300),
+     cv::Point2f( 750,  450),
+     cv::Point2f( 1100, 450),
          };
  
 void transformPoint(double&x,double&y, Mat&Trans)
@@ -106,6 +106,27 @@ void transformPoint(double&x,double&y, Mat&Trans)
   double W0 = M[6]*x + M[7]*(y) + M[8];
   x = X0/W0;
   y = Y0/W0;
+  
+ // printf("%.2lf, %.2lf\n", x,y);
+}
+
+void transformPoint(double & x,double &y, Mat&Trans, double height)
+{
+   double dx = x - 1296;//, 972
+   double dy = y - 972;
+   double ratio = (140 - height)/140;
+   x = 1296 + dx * ratio;
+   y = 972  + dy * ratio;   
+   double coeffs[3][3];
+    for( int i = 0; i < 3; i++ )
+            for( int j = 0; j < 3; j++ )
+               coeffs[i][j] = Trans.at<double>(i, j);
+  double *M = &coeffs[0][0];
+  double X0 = M[0]*x + M[1]*(y) + M[2];
+  double Y0 = M[3]*x + M[4]*(y) + M[5];
+  double W0 = M[6]*x + M[7]*(y) + M[8];
+  x = X0/W0 + 3.0;
+  y = Y0/W0 -2.3;
   
  // printf("%.2lf, %.2lf\n", x,y);
 }
@@ -252,7 +273,7 @@ int main(int argc, char *argv[]) {
 		
 		double xx = ObjCenterX;
 	    double yy = ObjCenterY;
-	     transformPoint(xx,yy, Mt );
+	     transformPoint(xx,yy, Mt , 3); //target
 		 MergeTxtStrNUM(CPic, ObjCenterX -20 , ObjCenterY-20,
 			  23, xx, yy,0, 0, 255); 
 		double y_xx = xx; double y_yy = yy;			   
@@ -294,7 +315,7 @@ int main(int argc, char *argv[]) {
                 uchar green     = intensity.val[1];
                 uchar red       = intensity.val[2];*/
 				C24PixVal Pix = get_pix_color(CPic,i+ExtractBox.left, j+ExtractBox.top);
-				if((*Pix.r)< 80 )
+				if((*Pix.r)< 40 )
 				* get_pix_color(GSubPic,i,j)= 0;
 			    else
 				* get_pix_color(GSubPic,i,j)= 255;	
@@ -373,12 +394,13 @@ int main(int argc, char *argv[]) {
 	     yy = ExtractBox.top  + RegionVec1[Idx].y;
 		 RoundPt.x =  xx;
 		 RoundPt.y =  yy;
-	     transformPoint(xx,yy, Mt );
+	     transformPoint( xx , yy, Mt );//, 15.0);
+		//transformPoint( xx , yy, Mt  , 15.0);
 		 MergeTxtStrNUM(CPic, ExtractBox.left + RegionVec1[Idx].x ,
 				                     ExtractBox.top  + RegionVec1[Idx].y ,
 			                         23, xx, yy,0, 0, 255);
 	    
-		printf("center circle %.2lf,%.2lf\n",xx,yy);						 
+		printf("center circle %.4lf,%.4lf\n",xx/1000.0,yy/1000.0);						 
 	    //#############################################################
 		
         int BoxIdx;		
@@ -431,7 +453,7 @@ int main(int argc, char *argv[]) {
 		 
 		// 		double y_xx = xx; double y_yy = yy;	
 				
-		printf("round block: %.2lf,%.2lf\n",y_xx,y_yy);	
+		printf("round block: %.4lf,%.4lf\n",y_xx/1000.0,y_yy/1000.0);	
 		
 		fprintf(file,"round block: %.4lf,%.4lf\n", y_xx/1000.0,y_yy/1000.0);
         fclose(file);// = fopen("/data/tzwang/temp/objinfo.txt");		
@@ -467,6 +489,7 @@ int main(int argc, char *argv[]) {
 		}/**/
 		
 		DrawPic.Save("temp.bmp");
+		CPic.DrawCircle(1296, 972, 12);
 	    //CPic.Save("dest.bmp");
 		  
 	    //CPic.Save("color_pic.bmp");

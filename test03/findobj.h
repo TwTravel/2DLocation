@@ -58,7 +58,7 @@ void GetGrayImage(C24BitMap&CPic,C256BitMap &GPic)
 			*get_pix_color(GPic, i, j) = 255;
 			continue;
 		}
-        if( ( fabs(h - 45) < 15 ) &&  (( s * 255.0) > 80) && ( v > 90.0) )
+        if( ( fabs(h - 45) < 15 ) &&  (( s * 255.0) > 80) && ( v > 75.0) )
 		{
 			val = 0;
 			for(t=-10;t<10;t++)
@@ -137,7 +137,7 @@ void GetGrayImageYellow(C24BitMap&CPic, C256BitMap &GPic)
 		 double  h, s, v;
 		 RGB2HSV(R, G, B, h, s, v);
         
-        if( ( fabs(h - 52) < 16 ) &&  (( s * 255.0) > 170) && ( v > 100.0) )
+        if( ( fabs(h - 52) < 16 ) &&  (( s * 255.0) > 170) && ( v > 80.0) )
 		{
 			val = 0;
 			for(t=-3;t<3;t++)
