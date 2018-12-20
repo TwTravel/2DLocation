@@ -78,7 +78,20 @@ static bool readDetectorParameters(string filename, Ptr<aruco::DetectorParameter
 }
 
 
+ cv::Point2f src_box_points[] = { 
+		cv::Point2f(1923 , 433),
+		cv::Point2f(1871 , 1132),
+		cv::Point2f(732  , 1058),
+		cv::Point2f(758 ,  380) };
  
+cv::Point2f dst_box_points[] = {
+	 cv::Point2f( 1102.1 - 51.0,      -148.2 - 48.5),
+     //cv::Point2f( 751.4  - 51.0+6.5,  -127.1 - 48.0),
+	 cv::Point2f( 700.2 ,  -218.4 -1.5 ),
+	  
+     cv::Point2f( 711.6  - 51.0 +2.0, 403.0  - 48.0+3.0-2.3),
+     cv::Point2f( 1058.7 - 51.0 +1.0, 433.9  - 48.0 +1.0-2.3),
+         };
 
 
 cv::Point2f src_points[] = { 
@@ -125,8 +138,8 @@ void transformPoint(double & x,double &y, Mat&Trans, double height)
   double X0 = M[0]*x + M[1]*(y) + M[2];
   double Y0 = M[3]*x + M[4]*(y) + M[5];
   double W0 = M[6]*x + M[7]*(y) + M[8];
-  x = X0/W0 + 3.0;
-  y = Y0/W0 -2.3;
+  x = X0/W0 ;///+ 3.0;
+  y = Y0/W0 ;//-2.3;
   
  // printf("%.2lf, %.2lf\n", x,y);
 }
@@ -156,7 +169,8 @@ double GetAngle(double x1,double y1, double x2,double y2)
 int main(int argc, char *argv[]) {
 	
 	InitTextMerge();
-	Mat Mt = PerspectiveTrans(src_points,  dst_points);
+	Mat Mt  = PerspectiveTrans(src_points,  dst_points);
+	Mat Mt2 = PerspectiveTrans(src_box_points,  dst_box_points);
 	double xx = src_points[0].x;
 	double yy = src_points[0].y;
 	transformPoint(xx,yy, Mt );
@@ -243,7 +257,7 @@ int main(int argc, char *argv[]) {
         inputVideo.retrieve(image);
         
 		frame_count ++;
-		if(frame_count<10)
+		if(frame_count<5)
 		   continue;
 		
 		Loopi(CPic.Width)
@@ -273,7 +287,7 @@ int main(int argc, char *argv[]) {
 		
 		double xx = ObjCenterX;
 	    double yy = ObjCenterY;
-	     transformPoint(xx,yy, Mt , 3); //target
+	     transformPoint(xx,yy, Mt );//, 3); //target
 		 MergeTxtStrNUM(CPic, ObjCenterX -20 , ObjCenterY-20,
 			  23, xx, yy,0, 0, 255); 
 		double y_xx = xx; double y_yy = yy;			   
@@ -315,7 +329,7 @@ int main(int argc, char *argv[]) {
                 uchar green     = intensity.val[1];
                 uchar red       = intensity.val[2];*/
 				C24PixVal Pix = get_pix_color(CPic,i+ExtractBox.left, j+ExtractBox.top);
-				if((*Pix.r)< 40 )
+				if((*Pix.r)< 80 )
 				* get_pix_color(GSubPic,i,j)= 0;
 			    else
 				* get_pix_color(GSubPic,i,j)= 255;	
@@ -324,7 +338,7 @@ int main(int argc, char *argv[]) {
 				//*Pix.b = blue;
 				
 			}
-		
+		GSubPic.Save("tmp002.bmp");
 		vector<Region> RegionVec1;
 		RegionVec1.clear();
 		
@@ -345,6 +359,8 @@ int main(int argc, char *argv[]) {
 		//SemCkIdx
 		for( i=0 ; i< RegionVec1.size() ; i++ )
 		{
+			if( RegionVec1[i].rheight > GSubPic.Height *3/4 )
+				continue;
 		    double val =   RegionVec1[i].PtVec.size() ; 
 			if( maxptnum < val )
 			{
@@ -392,8 +408,10 @@ int main(int argc, char *argv[]) {
 				
          xx = ExtractBox.left + RegionVec1[Idx].x;
 	     yy = ExtractBox.top  + RegionVec1[Idx].y;
-
-	     transformPoint( xx , yy, Mt );//, 15.0);
+        
+		 printf("before :%.4lf,%.4lf\n",xx/1000.0,yy/1000.0);
+	     transformPoint( xx , yy, Mt2 );//, 15.0);
+		 
 		//transformPoint( xx , yy, Mt  , 15.0);
 		 MergeTxtStrNUM(CPic, ExtractBox.left + RegionVec1[Idx].x ,
 				                     ExtractBox.top  + RegionVec1[Idx].y ,

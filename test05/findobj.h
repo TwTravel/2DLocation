@@ -83,10 +83,18 @@ void GetBallCenter(C256BitMap &GPic, double &x,double &y)
     GetBlackPicRegion( GPic, CPic, RegionVec);
     LabelVec.clear();
     GetObjContourColor(RegionVec, CPic, LabelVec);
-	if(RegionVec.size()>0)
+	int i;
+	for(i=0;i<RegionVec.size();i++)
 	{
-		x = RegionVec[0].x;
-		y = RegionVec[0].y;
+		printf("sizee %i\n", RegionVec[i].PtVec.size());
+		if(RegionVec[i].PtVec.size()>9000)
+			continue;
+		//if(RegionVec.size()>0)
+	{
+		x = RegionVec[i].x;
+		y = RegionVec[i].y;
+		break;
+	}
 	}
 	/*double cx,cy,num;
 	 cx = cy = num =0;
@@ -137,7 +145,7 @@ void GetGrayImageYellow(C24BitMap&CPic, C256BitMap &GPic)
 		 double  h, s, v;
 		 RGB2HSV(R, G, B, h, s, v);
         
-        if( ( fabs(h - 52) < 16 ) &&  (( s * 255.0) > 170) && ( v > 80.0) )
+        if( ( fabs(h - 55) < 15 ) &&  (( s * 255.0) > 200) && ( v > 95.0) )
 		{
 			val = 0;
 			for(t=-3;t<3;t++)
