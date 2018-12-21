@@ -6,7 +6,7 @@
 // Warn about use of deprecated functions.
 #define GNUPLOT_DEPRECATE_WARN
 //#include "gnuplot-iostream.h"
-#define PONIS_MINCOUNT 2000
+#define PONIS_MINCOUNT 400
 
 C24BitMap  gColorImg;
 C256BitMap GPic;
