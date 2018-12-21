@@ -287,7 +287,7 @@ int main(int argc, char *argv[]) {
 		
 		double xx = ObjCenterX;
 	    double yy = ObjCenterY;
-	     transformPoint(xx,yy, Mt );//, 3); //target
+	     transformPoint(xx,yy, Mt , 3); //);//, 3); //target
 		 MergeTxtStrNUM(CPic, ObjCenterX -20 , ObjCenterY-20,
 			  23, xx, yy,0, 0, 255); 
 		double y_xx = xx; double y_yy = yy;			   
