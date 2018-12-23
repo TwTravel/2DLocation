@@ -20,12 +20,13 @@ double robo_xmin = 0.588;
 double robo_xmax = 0.855;
 
 double zmin = 0.837;
-double zmax = 0.86;
+double zmax = 0.845;
 
  
 
 void PintAxis( double xx, double yy, int imgw, int imgh , double zz)
 {
+   //printf(" %.4lf, %.4lf ,  \n" , xx, yy);//, zz);
    double robox, roboy;
 
    double  xscale, yscale;
@@ -64,11 +65,15 @@ int main(int argc, char *argv[]) {
 	for(i=0;i< RegionVec.size();i++)
 	{
 		//int stepmax = ;
+		
 		for(k=0;k< RegionVec[i].MContours.size();k++)
 		{
+		
 		vector<RPoint> ContourPtVec;
 		ContourPtVec = RegionVec[i].MContours[k];
-		 
+		if(ContourPtVec.size()< step*2)
+			continue;
+			
 		PintAxis(  ContourPtVec[0].x,
 		           ContourPtVec[0].y, CPic.Width, CPic.Height , zmax);
 
@@ -79,6 +84,7 @@ int main(int argc, char *argv[]) {
 		for(j = 0; j< ( ContourPtVec.size() - step); )//j+=step)
 		{
 			t = 2;
+			
 			while((j + step*t)<  ContourPtVec.size())
 			{
 			   double  dx1, dy1, dx2, dy2;
@@ -99,7 +105,7 @@ int main(int argc, char *argv[]) {
 			   
 			   double sim2 = (dx1*dx2+ dy1*dy2)/sqrt( (dx1*dx1 + dy1*dy1) *(dx2*dx2 + dy2*dy2));
 			   sim2 = acos(sim2) * 180.0/3.141592653;
-			   if( sim1 < 4.0 && sim2 < 4.0)
+			   if( sim1 < 5.0 && sim2 < 5.0)
 			   {
 				   t++; 
 				   //printf("hello!\n");
