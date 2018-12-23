@@ -94,6 +94,7 @@ public:
 	void inline DrawCircle(int x, int y, double R, double tp);
 	void inline DrawCircleLine(int x, int y, double R);
 	void inline DrawLine(int x1,int y1,int x2,int y2);
+	double inline  SimuDrawLine(int x1,int y1,int x2,int y2);
 	void inline DrawTkLine(int x1,int y1,int x2,int y2,double R);
 	void inline DrawDashLine(int x1,int y1,int x2,int y2,double R);
 	void inline CleanPic(int Color);
@@ -365,6 +366,52 @@ void inline C24BitMap::DrawTkLine(int x1,int y1,int x2,int y2,double R)
 	}   
 
 }
+
+ 
+double inline C24BitMap::SimuDrawLine(int x1,int y1,int x2,int y2)
+{
+	int dx = x2 - x1;
+	int dy = y2 - y1;
+	int ux = ((dx > 0) << 1) - 1;//x的增量方向，取或-1
+	int uy = ((dy > 0) << 1) - 1;//y的增量方向，取或-1
+	int x = x1, y = y1, eps;//eps为累加误差
+	
+	C24PixVal Pix ;//= get_pix_color(CPic,i, j);
+	double sum(0);
+	eps = 0;dx = abs(dx); dy = abs(dy); 
+	if (dx > dy) 
+	{
+		for (x = x1; x != x2; x += ux)
+		{
+			//SigDot( x, y);
+			Pix = get_pix_color( (*this), x, y);
+			sum += (255 - *Pix.r);
+			eps += dy;
+			if ((eps << 1) >= dx)
+			{
+				y += uy; eps -= dx;
+			}
+		}
+	}
+	else
+	{
+		for (y = y1; y != y2; y += uy)
+		{
+			//SigDot( x, y);
+			Pix = get_pix_color( (*this), x, y);
+			sum += (255 - *Pix.r);
+			eps += dx;
+			if ((eps << 1) >= dy)
+			{
+				x += ux; eps -= dy;
+			}
+		}
+	}
+	
+   return sum;	
+}
+
+
 
 void inline C24BitMap::DrawLine(int x1,int y1,int x2,int y2)
 {
