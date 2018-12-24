@@ -11,7 +11,8 @@
 #define IJT int i,j,t;
 #define Loopi(k) for(i=0;i<k;i++)
 #define Loopj(k) for(j=0;j<k;j++)
-
+#define Loopt(k) for(t=0;t<k;t++)
+	
 #define BOUND(x,a,b) (((x) < (a)) ? (a) : (((x) > (b)) ? (b) : (x)))
 #define THRESHOLD(x,a,b,v) x<v?a:b
 
@@ -268,9 +269,9 @@ void inline C24BitMap::RectDot(int x,int y,int RR,int GG,int BB)
 
 void inline C24BitMap::RandPenColor()
 {
- PenColor.R = rand()%255;
- PenColor.G = rand()%255;
- PenColor.B = rand()%255; 
+ PenColor.R = (rand()%2)*(rand()%128+128)+(1-rand()%2)*rand()%255;
+ PenColor.G = (rand()%2)*(rand()%128+128)+(1-rand()%2)*rand()%255;
+ PenColor.B = (rand()%2)*(rand()%128+128)+(1-rand()%2)*rand()%255; 
 }
 
 void inline C24BitMap::CleanPic(int Color=0)

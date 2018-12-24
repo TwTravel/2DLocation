@@ -23,7 +23,18 @@ double robo_xmax = 0.855;
 double zmin = 0.837;
 double zmax = 0.845;
 
+//double 
+double triangle_area(RPoint&Pt1, RPoint&Pt2, RPoint&Pt3)
+{
+ double a,b,c;
+ a = RPointDistance(Pt1,Pt2);
+ b = RPointDistance(Pt2,Pt3);
+ c = RPointDistance(Pt3,Pt1);
  
+ double p = (a + b + c) / 2 ;
+ double S = sqrt( p * (p - a) * (p - b) * (p - c) );
+ return S;
+}
 
 void PintAxis( double xx, double yy, int imgw, int imgh , double zz)
 {
@@ -44,77 +55,31 @@ void PintAxis( double xx, double yy, int imgw, int imgh , double zz)
 C24BitMap  CPic;
 C256BitMap gGPic;
 
-void GenVoronoiLink(vector<Region>&RegionVec,int PicWidth,int PicHeight, vector< vector<int> > &LinkMat)
-{
-   int i,j;
-   
-   if(LinkMat.size()!= RegionVec.size())
-   {
-     LinkMat.resize(RegionVec.size());
-	 for(i=0;i< RegionVec.size();i++)
-	   {
-	   LinkMat[i].resize(RegionVec.size());
-	   }
-   }
-   for(i=0;i<RegionVec.size();i++)
-	   for(j=0;j<RegionVec.size();j++)
-	       LinkMat[i][j] = 0;
-	    
-   
-   MkVoronoi Mkv(PicWidth, PicHeight);
-	  int index =0;
-	  
-	  Loopi(RegionVec.size())
-	  {	  
-		  Mkv.sites[index].coord.x = RegionVec[i].GeoX;
-		  Mkv.sites[index].coord.y = RegionVec[i].GeoY;
-		  Mkv.sites[index].label   = i;
-		  Mkv.sites[index].sitenbr = index;
-		  
-		  SelectMinMax(RegionVec[i].GeoX,Mkv.xmin,Mkv.xmax);
-		  SelectMinMax(RegionVec[i].GeoY,Mkv.ymin,Mkv.ymax);
-		  index++;
-	  }
-	Mkv.nsites = index;
-	qsort(Mkv.sites, Mkv.nsites, sizeof *Mkv.sites, scomp);
-	  
-	 Mkv.CleanSites();
-	 Mkv.voronoi(PicWidth, PicHeight);
-	 
-	 vector<int> fdicvec;
-      CPic.SetColor(0);
-	  Loopi(Mkv.LINEnbr)
-	 {
-		  CPic.DrawLine(Mkv.lineseg[i].xs,Mkv.lineseg[i].ys,
-		                Mkv.lineseg[i].xe,Mkv.lineseg[i].ye);
-	 }
-	 
-	 Loopi(Mkv.NEIGHnbr)
-	 {
-		int Lab1,Lab2;
-		Lab1 = Mkv.neighbor[i].lab1;
-		Lab2 = Mkv.neighbor[i].lab2;
-		
-
-		
-		LinkMat[Lab1][Lab2] =
-		    LinkMat[Lab2][Lab1] = 1; 
-		 int xx1,yy1,xx2,yy2;
-		 xx1 = RegionVec[Mkv.neighbor[i].lab1].x; yy1 = RegionVec[Mkv.neighbor[i].lab1].y;
-		 xx2 = RegionVec[Mkv.neighbor[i].lab2].x; yy2 = RegionVec[Mkv.neighbor[i].lab2].y;
-
-		 double A1,A2;
-		 A1 =  (RegionVec[Mkv.neighbor[i].lab1].PtVec.size());
-		 A2 =  (RegionVec[Mkv.neighbor[i].lab2].PtVec.size());
-
-		 fdicvec.push_back((xx1-xx2)*(xx1-xx2) + (yy1-yy2)*(yy1-yy2));
-		 //CPic.DrawLine(xx1,yy1,xx2,yy2);/**/
-	}
-}
 
 // PtVec; 
+//vector<RPoint> RegionVecOut;
+void AddPoint2BigArea(vector<RPoint> &RegionVec, vector< vector<int> > &LinkMat,
+                      vector<RPoint> &RegionVecOut)
+{
+	RegionVecOut = RegionVec;
+	int i,j,t;
+	for(i = 0; i < RegionVec.size();i++)
+	 for(j = (i+1);j < RegionVec.size();j++)
+		 for(t= (j+1); t < RegionVec.size();t++)
+		 {
+			 if(LinkMat[i][j]&&LinkMat[j][t]&&LinkMat[t][i])
+			 {  RPoint tmp;
+				if(triangle_area(RegionVec[i], RegionVec[j], RegionVec[k])> 50)
+				{tmp.x = (RegionVec[i].x + RegionVec[j].x + RegionVec[k].x)/3;
+			     tmp.y = (RegionVec[i].y + RegionVec[j].y + RegionVec[k].y)/3;
+				 RegionVecOut.push_back(tmp);
+				}					
+			 }
+		 }
+}
 
-void GenVoronoiLink(vector<RPoint> &RegionVec,int PicWidth,int PicHeight, vector< vector<int> > &LinkMat)
+void GenVoronoiLink(vector<RPoint> &RegionVec,int PicWidth,int PicHeight,
+ vector< vector<int> > &LinkMat)
 {
    int i,j;
    
@@ -279,6 +244,7 @@ void SimplifyContour(vector<RPoint> &RegionVecIn, vector<RPoint> &RegionVecOut)
 		}*/
 }
 
+
 int main(int argc, char *argv[]) {
  
 	int i, j, t, k;
@@ -301,18 +267,104 @@ int main(int argc, char *argv[]) {
 	vector<RPoint>  RegionVecOut;
 	
 	
-	SimplifyContour(RegionVec[0].ContourPtVec,  RegionVecOut);
-	/*int step  = 15;
- 
+	SimplifyContour( RegionVec[0].ContourPtVec,  RegionVecOut);
+	
+	CPic.SetColor( 0 );
+	
+
+	
 	for(i=0;i< RegionVec.size();i++)
 	{
 		//int stepmax = ;
 		
+		for(k=0;k< RegionVec[i].MContours.size();k++)
+		{
+		 CPic.RandPenColor();
+		 vector<RPoint> ContourPtVec;
+		 ContourPtVec = RegionVec[i].MContours[k];
 		 
-	}*/
+		  for(j = 0; j< ( ContourPtVec.size() - 1); j++)//j+=step)
+		  {
+		    CPic.DrawTkLine( ContourPtVec[j  ].x, ContourPtVec[j  ].y,
+			                 ContourPtVec[j+1].x, ContourPtVec[j+1].y,1);
+		  }
+		}
+	}
 	
 	vector< vector<int> >  LinkMat;
 	GenVoronoiLink(RegionVecOut,CPic.Width, CPic.Height,  LinkMat);
+	
 	CPic.Save("temp.bmp");
     return 0;
 }
+
+
+/*
+void GenVoronoiLink(vector<Region>&RegionVec,int PicWidth,int PicHeight, vector< vector<int> > &LinkMat)
+{
+   int i,j;
+   
+   if(LinkMat.size()!= RegionVec.size())
+   {
+     LinkMat.resize(RegionVec.size());
+	 for(i=0;i< RegionVec.size();i++)
+	   {
+	   LinkMat[i].resize(RegionVec.size());
+	   }
+   }
+   for(i=0;i<RegionVec.size();i++)
+	   for(j=0;j<RegionVec.size();j++)
+	       LinkMat[i][j] = 0;
+	    
+   
+   MkVoronoi Mkv(PicWidth, PicHeight);
+	  int index =0;
+	  
+	  Loopi(RegionVec.size())
+	  {	  
+		  Mkv.sites[index].coord.x = RegionVec[i].GeoX;
+		  Mkv.sites[index].coord.y = RegionVec[i].GeoY;
+		  Mkv.sites[index].label   = i;
+		  Mkv.sites[index].sitenbr = index;
+		  
+		  SelectMinMax(RegionVec[i].GeoX,Mkv.xmin,Mkv.xmax);
+		  SelectMinMax(RegionVec[i].GeoY,Mkv.ymin,Mkv.ymax);
+		  index++;
+	  }
+	Mkv.nsites = index;
+	qsort(Mkv.sites, Mkv.nsites, sizeof *Mkv.sites, scomp);
+	  
+	 Mkv.CleanSites();
+	 Mkv.voronoi(PicWidth, PicHeight);
+	 
+	 vector<int> fdicvec;
+      CPic.SetColor(0);
+	  Loopi(Mkv.LINEnbr)
+	 {
+		  CPic.DrawLine(Mkv.lineseg[i].xs,Mkv.lineseg[i].ys,
+		                Mkv.lineseg[i].xe,Mkv.lineseg[i].ye);
+	 }
+	 
+	 Loopi(Mkv.NEIGHnbr)
+	 {
+		int Lab1,Lab2;
+		Lab1 = Mkv.neighbor[i].lab1;
+		Lab2 = Mkv.neighbor[i].lab2;
+		
+
+		
+		LinkMat[Lab1][Lab2] =
+		    LinkMat[Lab2][Lab1] = 1; 
+		 int xx1,yy1,xx2,yy2;
+		 xx1 = RegionVec[Mkv.neighbor[i].lab1].x; yy1 = RegionVec[Mkv.neighbor[i].lab1].y;
+		 xx2 = RegionVec[Mkv.neighbor[i].lab2].x; yy2 = RegionVec[Mkv.neighbor[i].lab2].y;
+
+		 double A1,A2;
+		 A1 =  (RegionVec[Mkv.neighbor[i].lab1].PtVec.size());
+		 A2 =  (RegionVec[Mkv.neighbor[i].lab2].PtVec.size());
+
+		 fdicvec.push_back((xx1-xx2)*(xx1-xx2) + (yy1-yy2)*(yy1-yy2));
+		 //CPic.DrawLine(xx1,yy1,xx2,yy2); 
+	}
+}
+*/
