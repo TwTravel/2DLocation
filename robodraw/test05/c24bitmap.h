@@ -131,6 +131,11 @@ public:
 		  PenColor.G = 255;
 		  PenColor.B = 255;
 		}
+		 if(val==4)
+		{ PenColor.R = 128;
+		  PenColor.G = 128;
+		  PenColor.B = 128;
+		}
 	};
 	int  SaveToMem(BYTE*outbuf)
 	{   

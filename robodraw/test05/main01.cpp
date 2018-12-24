@@ -69,9 +69,9 @@ void AddPoint2BigArea(vector<RPoint> &RegionVec, vector< vector<int> > &LinkMat,
 		 {
 			 if(LinkMat[i][j]&&LinkMat[j][t]&&LinkMat[t][i])
 			 {  RPoint tmp;
-				if(triangle_area(RegionVec[i], RegionVec[j], RegionVec[k])> 50)
-				{tmp.x = (RegionVec[i].x + RegionVec[j].x + RegionVec[k].x)/3;
-			     tmp.y = (RegionVec[i].y + RegionVec[j].y + RegionVec[k].y)/3;
+				if(triangle_area(RegionVec[i], RegionVec[j], RegionVec[t])> 1000)
+				{tmp.x = (RegionVec[i].x + RegionVec[j].x + RegionVec[t].x)/3;
+			     tmp.y = (RegionVec[i].y + RegionVec[j].y + RegionVec[t].y)/3;
 				 RegionVecOut.push_back(tmp);
 				}					
 			 }
@@ -293,7 +293,16 @@ int main(int argc, char *argv[]) {
 	
 	vector< vector<int> >  LinkMat;
 	GenVoronoiLink(RegionVecOut,CPic.Width, CPic.Height,  LinkMat);
+	vector<RPoint>  RegionVecOut2;
+	AddPoint2BigArea(RegionVecOut,  LinkMat, RegionVecOut2);
 	
+	CPic.SetColor(4);
+	
+	Loopi( RegionVec[0].PtVec.size() )
+	{
+		CPic.SigDot(RegionVec[0].PtVec[i].x, RegionVec[0].PtVec[i].y);
+	}
+	GenVoronoiLink(RegionVecOut2,CPic.Width, CPic.Height,  LinkMat);
 	CPic.Save("temp.bmp");
     return 0;
 }
