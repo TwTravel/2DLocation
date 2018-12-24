@@ -291,6 +291,7 @@ int main(int argc, char *argv[]) {
 		}
 	}
 	
+	
 	vector< vector<int> >  LinkMat;
 	GenVoronoiLink(RegionVecOut,CPic.Width, CPic.Height,  LinkMat);
 	vector<RPoint>  RegionVecOut2;
@@ -303,6 +304,12 @@ int main(int argc, char *argv[]) {
 		CPic.SigDot(RegionVec[0].PtVec[i].x, RegionVec[0].PtVec[i].y);
 	}
 	GenVoronoiLink(RegionVecOut2,CPic.Width, CPic.Height,  LinkMat);
+	
+	Loopi( RegionVecOut.size()-1)
+	{
+		CPic.DrawTkLine(RegionVecOut[i].x, RegionVecOut[i].y,
+		                RegionVecOut[i+1].x, RegionVecOut[i+1].y,1);
+	}
 	CPic.Save("temp.bmp");
     return 0;
 }
