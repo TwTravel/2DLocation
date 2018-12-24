@@ -119,13 +119,13 @@ void GenVoronoiLink(vector<RPoint> &RegionVec,int PicWidth,int PicHeight,
 	 
 	 vector<int> fdicvec;
 	 
-      CPic.SetColor(2);
+      /*CPic.SetColor(2);
 	  
 	  Loopi(Mkv.LINEnbr)
 	 {
 		  CPic.DrawLine(Mkv.lineseg[i].xs,Mkv.lineseg[i].ys,
 		                Mkv.lineseg[i].xe,Mkv.lineseg[i].ye);
-	 }
+	 }*/
 	 
 	  CPic.SetColor(1);
 	 Loopi(Mkv.NEIGHnbr)
