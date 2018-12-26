@@ -293,6 +293,112 @@ void ColorHSV(double c1_h, double c1_s, double c1_v,int &R,int &G,int &B)
    B =  sat_b;
 }
 
+
+//===========================================================
+#include "Graph.h"
+#include "ChinesePostman.h"
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <sstream>
+using namespace std;
+
+pair< Graph, vector<double> > ReadWeightedGraph(string filename)
+{
+	//Please see Graph.h for a description of the interface
+
+	ifstream file;
+	file.open(filename.c_str());
+
+	string s;
+	getline(file, s);
+	stringstream ss(s);
+	int n;
+	ss >> n;
+	getline(file, s);
+	ss.str(s);
+	ss.clear();
+	int m;
+	ss >> m;
+
+	Graph G(n);
+	vector<double> cost(m);
+	for(int i = 0; i < m; i++)
+	{
+		getline(file, s);
+		ss.str(s);
+		ss.clear();
+		int u, v;
+		double c;
+		ss >> u >> v >> c;
+
+		G.AddEdge(u, v);
+		cost[G.GetEdgeIndex(u, v)] = c;
+	}
+
+	file.close();
+	return make_pair(G, cost);
+}
+
+pair< Graph, vector<double> > ReadWeightedGraph
+(vector<RPoint> &RegionVecOut2, vector< vector<int> > & LinkMat)
+{
+	//Please see Graph.h for a description of the interface
+    int i,j;
+	Graph G(RegionVecOut2.size());
+	vector<double> cost;
+	for(int i = 0; i < RegionVecOut2.size(); i++)
+		for(int j = i+1; j < RegionVecOut2.size(); j++)
+	{
+		//getline(file, s);
+		//ss.str(s);
+		//ss.clear();
+		if(LinkMat[i][j])
+		{//int u, v;
+		 //double c;
+		//ss >> u >> v >> c;
+		G.AddEdge(i, j);
+		double dist = RPointDistance(RegionVecOut2[i], RegionVecOut2[j]);
+		cost.push_back(dist);
+		cost[G.GetEdgeIndex(i, j)] =  dist;
+		}
+	}
+
+	 
+	return make_pair(G, cost);
+}
+//vector< vector<int> >  LinkMat;
+//	GenVoronoiLink(RegionVecOut,CPic.Width, CPic.Height,  LinkMat);
+//	vector<RPoint>  RegionVecOut2;
+void GenPathFromDots(vector<RPoint> &RegionVecOut2, vector< vector<int> > & LinkMat)
+{	   
+  char* filename; 
+  Graph G;
+  vector<double> cost;
+	
+  //Read the graph
+  pair< Graph, vector<double> > p = 
+  ReadWeightedGraph( RegionVecOut2, LinkMat);
+  G = p.first;
+  cost = p.second;
+
+  //Solve the problem
+  pair< list<int> , double > sol = ChinesePostman(G, cost);
+
+  cout << "Solution cost: " << sol.second << endl;
+
+  list<int> s = sol.first;
+
+  //Print edges in the solution
+  cout << "Solution:" << endl;
+  for(list<int>::iterator it = s.begin(); it != s.end(); it++)
+  cout << *it << " ";
+  cout << endl;
+}
+//===========================================================
+//===========================================================
+//===========================================================
+
 int main(int argc, char *argv[]) {
  
 	int i, j, t, k;
@@ -360,6 +466,8 @@ int main(int argc, char *argv[]) {
 		CPic.DrawTkLine(RegionVecOut[i].x, RegionVecOut[i].y,
 		                RegionVecOut[i+1].x, RegionVecOut[i+1].y,1);
 	}
+	
+	GenPathFromDots( RegionVecOut2,   LinkMat);
 	CPic.Save("temp.bmp");
     return 0;
 }
