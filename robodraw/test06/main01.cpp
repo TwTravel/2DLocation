@@ -370,7 +370,7 @@ pair< Graph, vector<double> > ReadWeightedGraph
 //vector< vector<int> >  LinkMat;
 //	GenVoronoiLink(RegionVecOut,CPic.Width, CPic.Height,  LinkMat);
 //	vector<RPoint>  RegionVecOut2;
-void GenPathFromDots(vector<RPoint> &RegionVecOut2, vector< vector<int> > & LinkMat)
+void GenPathFromDots(vector<RPoint> &RegionVecOut2, vector< vector<int> > & LinkMat, vector<int>& LinkOrderVec)
 {	   
   char* filename; 
   Graph G;
@@ -392,13 +392,15 @@ void GenPathFromDots(vector<RPoint> &RegionVecOut2, vector< vector<int> > & Link
   //Print edges in the solution
   cout << "Solution:" << endl;
   for(list<int>::iterator it = s.begin(); it != s.end(); it++)
-  cout << *it << " ";
+  {cout << *it << " ";
+   LinkOrderVec.push_back( (*it) );  
+  }
   cout << endl;
 }
 //===========================================================
 //===========================================================
 //===========================================================
-
+void GenGraphPath(vector<RPoint> & RegionVecOut ,vector< vector<int> > & LinkMat);
 int main(int argc, char *argv[]) {
  
 	int i, j, t, k;
@@ -465,14 +467,65 @@ int main(int argc, char *argv[]) {
 	{
 		CPic.DrawTkLine(RegionVecOut[i].x, RegionVecOut[i].y,
 		                RegionVecOut[i+1].x, RegionVecOut[i+1].y,1);
+		LinkMat[i][i+1] = LinkMat[i+1][i] = 1;
 	}
 	
-	GenPathFromDots( RegionVecOut2,   LinkMat);
+	vector<int> LinkOrderVec;
+	GenPathFromDots( RegionVecOut2,   LinkMat, LinkOrderVec);
+	
+	for(i=0; i< LinkOrderVec.size()-1;i++)
+	{
+		double angle = double(i)*360.0/double(LinkOrderVec.size());
+		int RR, GG, BB;
+		ColorHSV(angle, 1, 1, RR, GG, BB);
+		CPic.PenColor.R = RR;
+		CPic.PenColor.G = GG;
+		CPic.PenColor.B = BB;
+		int Idx1,Idx2;
+		Idx1 = LinkOrderVec[i];
+		Idx2 = LinkOrderVec[i+1];
+		CPic.DrawTkLine(RegionVecOut2[Idx1].x, RegionVecOut2[Idx1].y,
+		                RegionVecOut2[Idx2].x, RegionVecOut2[Idx2].y, 1);
+		CPic.DrawCircle(RegionVecOut2[Idx1].x, RegionVecOut2[Idx1].y, 5);
+	}
+	//Loopi()
+	//GenGraphPath(RegionVecOut2 , LinkMat);
+	
 	CPic.Save("temp.bmp");
     return 0;
 }
 
-
+void GenGraphPath(vector<RPoint> & RegionVecOut ,vector< vector<int> > & LinkMat)
+{ 
+  int i,j ,cnt(0);
+  vector <double> distvec;
+  for(i=0;i<RegionVecOut.size();i++)
+	  for(j=i+1;j<RegionVecOut.size();j++)
+	  {
+		 if(LinkMat[i][j])
+		{//int u, v;
+		 //double c;
+		//ss >> u >> v >> c;
+		//G.AddEdge(i, j);
+		//double dist = RPointDistance(RegionVecOut2[i], RegionVecOut2[j]);
+		//cost.push_back(dist);
+		//cost[G.GetEdgeIndex(i, j)] =  dist;
+		  cnt++;
+		}
+	  }
+  printf("%i\n", RegionVecOut.size());
+  printf("%i\n", cnt );
+  
+    for(i=0;i<RegionVecOut.size();i++)
+	  for(j=i+1;j<RegionVecOut.size();j++)
+	  {
+		 if(LinkMat[i][j])
+		{ 
+	      printf("%i %i %i\n", i,j, int(RPointDistance(RegionVecOut[i], RegionVecOut[j])/2.0));
+		  cnt++;
+		}
+	  }
+}
 /*
 void GenVoronoiLink(vector<Region>&RegionVec,int PicWidth,int PicHeight, vector< vector<int> > &LinkMat)
 {
