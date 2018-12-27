@@ -20,8 +20,8 @@ double robo_ymax = 0.145;
 double robo_xmin = 0.588;
 double robo_xmax = 0.855;
 
-double zmin = 0.837;
-double zmax = 0.845;
+double zmin = 0.8395;
+double zmax = 0.847;
 
 //double 
 double triangle_area(RPoint&Pt1, RPoint&Pt2, RPoint&Pt3)
@@ -385,17 +385,17 @@ void GenPathFromDots(vector<RPoint> &RegionVecOut2, vector< vector<int> > & Link
   //Solve the problem
   pair< list<int> , double > sol = ChinesePostman(G, cost);
 
-  cout << "Solution cost: " << sol.second << endl;
+  //robomove cout << "Solution cost: " << sol.second << endl;
 
   list<int> s = sol.first;
 
   //Print edges in the solution
-  cout << "Solution:" << endl;
+  //robomovecout << "Solution:" << endl;
   for(list<int>::iterator it = s.begin(); it != s.end(); it++)
-  {cout << *it << " ";
+  {//robomove cout << *it << " ";
    LinkOrderVec.push_back( (*it) );  
   }
-  cout << endl;
+  //robomove cout << endl;
 }
 //===========================================================
 //===========================================================
@@ -424,7 +424,7 @@ int main(int argc, char *argv[]) {
 	
 	
 	 //SampleContour(RegionVec[0].ContourPtVec,  RegionVecOut,20);
- ResampleCurve(RegionVec[0].ContourPtVec,  RegionVecOut, RegionVec[0].ContourPtVec.size()/30);
+ ResampleCurve(RegionVec[0].ContourPtVec,  RegionVecOut, RegionVec[0].ContourPtVec.size()/25);
 	//SimplifyContour( RegionVec[0].ContourPtVec,  RegionVecOut);
 	
 	CPic.SetColor( 0 );
@@ -473,6 +473,12 @@ int main(int argc, char *argv[]) {
 	vector<int> LinkOrderVec;
 	GenPathFromDots( RegionVecOut2,   LinkMat, LinkOrderVec);
 	
+	int Idx1,Idx2;
+	Idx1 = LinkOrderVec[0];
+	
+	PintAxis(  RegionVecOut2[Idx1].x,
+		       RegionVecOut2[Idx1].y, CPic.Width, CPic.Height , zmax);
+				   
 	for(i=0; i< LinkOrderVec.size()-1;i++)
 	{
 		double angle = double(i)*360.0/double(LinkOrderVec.size());
@@ -481,13 +487,22 @@ int main(int argc, char *argv[]) {
 		CPic.PenColor.R = RR;
 		CPic.PenColor.G = GG;
 		CPic.PenColor.B = BB;
-		int Idx1,Idx2;
+		
 		Idx1 = LinkOrderVec[i];
 		Idx2 = LinkOrderVec[i+1];
 		CPic.DrawTkLine(RegionVecOut2[Idx1].x, RegionVecOut2[Idx1].y,
 		                RegionVecOut2[Idx2].x, RegionVecOut2[Idx2].y, 1);
 		CPic.DrawCircle(RegionVecOut2[Idx1].x, RegionVecOut2[Idx1].y, 5);
+		
+		PintAxis(  RegionVecOut2[Idx1].x,
+		       RegionVecOut2[Idx1].y, CPic.Width, CPic.Height , zmin);
 	}
+	
+	PintAxis(  RegionVecOut2[Idx2].x,
+		       RegionVecOut2[Idx2].y, CPic.Width, CPic.Height , zmin);
+			   
+	PintAxis(  RegionVecOut2[Idx2].x,
+		       RegionVecOut2[Idx2].y, CPic.Width, CPic.Height , zmax);
 	//Loopi()
 	//GenGraphPath(RegionVecOut2 , LinkMat);
 	
